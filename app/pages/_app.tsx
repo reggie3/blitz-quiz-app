@@ -8,17 +8,23 @@ import {
   useQueryErrorResetBoundary,
 } from "blitz"
 import LoginForm from "app/auth/components/LoginForm"
+import { store } from "app/redux/store"
+import React from "react"
+import { Provider } from "react-redux"
+import "@fontsource/roboto"
 
 export default function App({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
 
   return (
-    <ErrorBoundary
-      FallbackComponent={RootErrorFallback}
-      onReset={useQueryErrorResetBoundary().reset}
-    >
-      {getLayout(<Component {...pageProps} />)}
-    </ErrorBoundary>
+    <Provider store={store}>
+      <ErrorBoundary
+        FallbackComponent={RootErrorFallback}
+        onReset={useQueryErrorResetBoundary().reset}
+      >
+        {getLayout(<Component {...pageProps} />)}
+      </ErrorBoundary>
+    </Provider>
   )
 }
 
