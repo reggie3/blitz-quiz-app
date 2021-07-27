@@ -1,4 +1,5 @@
-import { forwardRef, PropsWithoutRef } from "react"
+import { TextField } from "@material-ui/core"
+import React, { forwardRef, PropsWithoutRef } from "react"
 import { useField } from "react-final-form"
 
 export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
@@ -22,6 +23,16 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
 
     const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
 
+    // return (
+    //   <TextField
+    //     {...props}
+    //     {...outerProps}
+    //     {...input}
+    //     error={normalizedError}
+    //     variant="standard"
+    //     fullWidth
+    //   />
+    // )
     return (
       <div {...outerProps}>
         <label>
