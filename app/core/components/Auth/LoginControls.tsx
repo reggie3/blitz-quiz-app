@@ -22,7 +22,15 @@ export const LoginControls = (props: Props) => {
   }
 
   if (currentUser) {
-    return <Button onClick={onClickLogout}>logout</Button>
+    return (
+      <Button variant="contained" color="default" onClick={onClickLogout}>
+        logout
+      </Button>
+    )
   }
-  return <Button onClick={onClickLogin}>login</Button>
+  return (
+    <Button variant="contained" color="default" onClick={onClickLogin}>
+      login
+    </Button>
+  )
 }

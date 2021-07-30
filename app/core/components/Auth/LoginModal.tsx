@@ -4,7 +4,7 @@ import { closeModal, ModalNames } from "app/redux/modalSlice"
 import { RootState } from "app/redux/store"
 import React, { useCallback, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { MyModal } from "../myComponents/MyModal"
+import { MyModal } from "../myComponents/MyModal/MyModal"
 
 interface Props {}
 

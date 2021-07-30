@@ -1,5 +1,6 @@
 import React, { Suspense } from "react"
 import { LoginModal } from "../Auth/LoginModal"
+import SignupModal from "../Auth/SignupModal"
 
 interface Props {}
 
@@ -8,6 +9,7 @@ const ModalContainer = (props: Props) => {
     <div>
       <Suspense fallback="Loading...">
         <LoginModal />
+        <SignupModal />
       </Suspense>
     </div>
   )

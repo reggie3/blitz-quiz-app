@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react"
 import { Head } from "blitz"
-import Navbar from "../components/Navbar"
+import MyAppbar from "../components/MyAppbar"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import { makeStyles } from "@material-ui/core"
 
@@ -18,7 +18,7 @@ const Layout = ({ title, children }: LayoutProps) => {
         <title>{title || "blitz-quiz-app"}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar />
+      <MyAppbar />
       {children}
     </div>
   )

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export enum ModalNames {
   LOGIN = "LOGIN",
+  SIGNUP = "SIGNUP",
 }
 
 export interface ModalData {
@@ -15,6 +16,10 @@ const initialState: ModalState = {
   [ModalNames.LOGIN]: {
     isOpen: false,
     modalName: ModalNames.LOGIN,
+  },
+  [ModalNames.SIGNUP]: {
+    isOpen: false,
+    modalName: ModalNames.SIGNUP,
   },
 }
 
@@ -33,7 +38,15 @@ export const modalSlice = createSlice({
       state[action.payload].isOpen = false
     },
     showModal: (state, action: PayloadAction<ModalNames>) => {
-      state[action.payload].isOpen = true
+      const newModalState = {} as ModalState
+      Object.keys(state).forEach((key) => {
+        if (key !== action.payload) {
+          newModalState[key] = { ...state[key], isOpen: false }
+        } else {
+          newModalState[key] = { ...state[key], isOpen: true }
+        }
+      })
+      return newModalState
     },
   },
 })

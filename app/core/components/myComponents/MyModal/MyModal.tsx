@@ -1,7 +1,8 @@
 import { IconButton, makeStyles, Modal } from "@material-ui/core"
 import React, { ReactElement } from "react"
 import CloseIcon from "@material-ui/icons/Close"
-import { MyCloseIconButton } from "./MyCloseIconButton"
+import { MyCloseIconButton } from "../MyCloseIconButton"
+import BackdropComponent from "./BackdropComponent"
 
 interface Props {
   children: ReactElement
@@ -28,6 +29,7 @@ export const MyModal = ({
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
       className={modalRoot}
+      BackdropComponent={BackdropComponent}
     >
       <div className={paper}>
         {shouldShowExitButton && <MyCloseIconButton onClick={onClickClose} />}

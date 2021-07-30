@@ -2,6 +2,7 @@
   "name": "blitz-quiz-app",
   "version": "1.0.0",
   "scripts": {
+    "docker": "docker-compose up",
     "dev": "blitz dev",
     "build": "blitz build",
     "start": "blitz start",

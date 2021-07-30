@@ -1,10 +1,15 @@
 import { AppBar, Box, makeStyles, Typography } from "@material-ui/core"
+import { RootState } from "app/redux/store"
 import React, { Suspense } from "react"
+import { useSelector } from "react-redux"
 import { LoginControls } from "./Auth/LoginControls"
+import { GamePlayControls } from "./GamePlayControls"
 
 interface Props {}
 
-const Navbar = (props: Props) => {
+const MyAppbar = (props: Props) => {
+  const { showBorders } = useSelector((state: RootState) => state.debugging)
+
   return (
     <AppBar position="static">
       <Box
@@ -12,12 +17,14 @@ const Navbar = (props: Props) => {
         px={2}
         display="flex"
         flexDirection="row"
-        border="1px dashed yellow"
+        border={showBorders ? "1px dashed yellow" : "none"}
         alignItems="center"
+        justifyContent="space-between"
       >
-        <Box flex={1}>
+        <Box flex={2}>
           <Typography>Game Show </Typography>
         </Box>
+
         <Suspense fallback="Loading...">
           <LoginControls />
         </Suspense>
@@ -26,8 +33,4 @@ const Navbar = (props: Props) => {
   )
 }
 
-export default Navbar
-
-// const useStyles = makeStyles({
-//   root: { padding: theme.spacin
-// }
+export default MyAppbar

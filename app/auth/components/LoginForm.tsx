@@ -3,6 +3,9 @@ import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { Form, FORM_ERROR } from "app/core/components/Form"
 import login from "app/auth/mutations/login"
 import { Login } from "app/auth/validations"
+import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
+import { useDispatch } from "react-redux"
+import { ModalNames, showModal } from "app/redux/modalSlice"
 
 type LoginFormProps = {
   onSuccess?: () => void
@@ -10,6 +13,11 @@ type LoginFormProps = {
 
 export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
+  const dispatch = useDispatch()
+
+  const onClickSignUp = () => {
+    dispatch(showModal(ModalNames.SIGNUP))
+  }
 
   return (
     <div>
@@ -24,6 +32,7 @@ export const LoginForm = (props: LoginFormProps) => {
             await loginMutation(values)
             props.onSuccess?.()
           } catch (error) {
+            debugger
             if (error instanceof AuthenticationError) {
               return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
             } else {
@@ -45,7 +54,7 @@ export const LoginForm = (props: LoginFormProps) => {
       </Form>
 
       <div style={{ marginTop: "1rem" }}>
-        Or <Link href={Routes.SignupPage()}>Sign Up</Link>
+        Or <MyClickableLink onClick={onClickSignUp}>Sign Up</MyClickableLink>
       </div>
     </div>
   )

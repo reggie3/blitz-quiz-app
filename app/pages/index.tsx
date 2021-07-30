@@ -4,6 +4,8 @@ import Layout from "app/core/layouts/Layout"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import logout from "app/auth/mutations/logout"
 import ModalContainer from "app/core/components/myComponents/ModalContainer"
+import { Box } from "@material-ui/core"
+import { GamePlayControls } from "app/core/components/GamePlayControls"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
@@ -52,8 +54,12 @@ const UserInfo = () => {
 
 const Home: BlitzPage = () => {
   return (
-    <div className="container">
-      Home page
+    <div className="container" data-testid="index-page">
+      <Box flex={2} padding={2}>
+        <Suspense fallback="Loading...">
+          <GamePlayControls />
+        </Suspense>
+      </Box>
       <ModalContainer />
     </div>
   )
