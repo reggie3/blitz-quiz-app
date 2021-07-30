@@ -20,7 +20,7 @@ const ListHeader = ({ startButtonProps = [], endButtonProps = [] }: Props) => {
         {startButtonProps.map(({ icon, label, onClick, testId }) => {
           return (
             <Button
-              data-testId={testId ?? label}
+              data-testid={testId ?? label}
               key={label}
               className={button}
               size="small"
@@ -37,7 +37,7 @@ const ListHeader = ({ startButtonProps = [], endButtonProps = [] }: Props) => {
         {endButtonProps.map(({ icon, label, onClick, testId }) => {
           return (
             <Button
-              data-testId={testId ?? label}
+              data-testid={testId ?? label}
               key={label}
               className={button}
               size="small"
