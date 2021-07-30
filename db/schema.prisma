@@ -24,6 +24,7 @@ model User {
   tokens   Token[]
   sessions Session[]
 
+  Game Game[]
 }
 
 model Session {
@@ -65,25 +66,34 @@ model Token {
 //   RESET_PASSWORD
 // }
 
+model Answer {
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  text          String
+  question      Question? @relation("correctAnswer")
+  wrongQuestion Question? @relation("wrongAnswers", fields: [questionId], references: [id])
+  questionId    Int?
+}
+
 model Question {
   id            Int      @id @default(autoincrement())
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   text          String
-  correctAnswer Int
-  wrongAnswers  Int[]
-}
-
-model Answer {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  text      String
+  correctAnswer Answer   @relation(name: "correctAnswer", fields: [answerId], references: [id])
+  wrongAnswers  Answer[] @relation(name: "wrongAnswers")
+  gameId        Int?
+  game          Game?    @relation(fields: [gameId], references: [id])
+  answerId      Int
 }
 
 model Game {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   name      String
+  questions Question[]
+  creator   User?      @relation(fields: [userId], references: [id])
+  userId    Int?
 }

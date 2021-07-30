@@ -2,7 +2,7 @@ import React, { ReactNode } from "react"
 import { Head } from "blitz"
 import MyAppbar from "../components/MyAppbar"
 import CssBaseline from "@material-ui/core/CssBaseline"
-import { makeStyles } from "@material-ui/core"
+import { Box, makeStyles } from "@material-ui/core"
 
 type LayoutProps = {
   title?: string
@@ -19,7 +19,7 @@ const Layout = ({ title, children }: LayoutProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MyAppbar />
-      {children}
+      <Box padding={2}>{children}</Box>
     </div>
   )
 }

@@ -3,13 +3,20 @@ import { Head, Link, useRouter, useQuery, useParam, BlitzPage, useMutation, Rout
 import Layout from "app/core/layouts/Layout"
 import getGame from "app/games/queries/getGame"
 import deleteGame from "app/games/mutations/deleteGame"
+import getUserById from "app/users/queries/getUserById"
 
 export const Game = () => {
   const router = useRouter()
   const gameId = useParam("gameId", "number")
   const [deleteGameMutation] = useMutation(deleteGame)
+
   const [game] = useQuery(getGame, { id: gameId })
 
+  console.log("game.userId", game.userId)
+  const [user] = useQuery(getUserById, { userId: game.userId })
+
+  console.log("user", user)
+  const createdByText = user?.name ?? user?.email ?? "Unknown"
   return (
     <>
       <Head>
@@ -17,7 +24,8 @@ export const Game = () => {
       </Head>
 
       <div>
-        <h1>Game {game.id}</h1>
+        <h1>{game.name}</h1>
+        {createdByText && <p>Created by {createdByText}</p>}
         <pre>{JSON.stringify(game, null, 2)}</pre>
 
         <Link href={Routes.EditGamePage({ gameId: game.id })}>
