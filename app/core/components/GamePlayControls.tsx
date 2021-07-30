@@ -1,5 +1,5 @@
 import { Box, Button } from "@material-ui/core"
-import React from "react"
+import React, { Suspense } from "react"
 import { useRouter } from "blitz"
 
 import { useCurrentUser } from "../hooks/useCurrentUser"
@@ -19,6 +19,7 @@ export const GamePlayControls = (props: Props) => {
 
   const onClickStartGame = () => {}
   const onClickPlayGame = () => {}
+
   return (
     <Box
       display="flex"

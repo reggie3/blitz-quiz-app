@@ -2,9 +2,10 @@ import { resolver } from "blitz"
 import db from "db"
 import { z } from "zod"
 
-const UpdateGame = z.object({
+export const UpdateGame = z.object({
   id: z.number(),
   name: z.string(),
+  description: z.string(),
 })
 
 export default resolver.pipe(

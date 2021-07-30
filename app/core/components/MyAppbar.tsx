@@ -1,5 +1,6 @@
 import { AppBar, Box, makeStyles, Typography } from "@material-ui/core"
 import { RootState } from "app/redux/store"
+import { Link, Routes } from "blitz"
 import React, { Suspense } from "react"
 import { useSelector } from "react-redux"
 import { LoginControls } from "./Auth/LoginControls"
@@ -22,7 +23,9 @@ const MyAppbar = (props: Props) => {
         justifyContent="space-between"
       >
         <Box flex={2}>
-          <Typography>Game Show </Typography>
+          <Link href={Routes.Home()}>
+            <Typography style={{ cursor: "pointer" }}>Game Show </Typography>
+          </Link>
         </Box>
 
         <Suspense fallback="Loading...">

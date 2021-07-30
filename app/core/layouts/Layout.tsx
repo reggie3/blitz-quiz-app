@@ -10,16 +10,22 @@ type LayoutProps = {
 }
 
 const Layout = ({ title, children }: LayoutProps) => {
-  const { container } = useStyles()
+  const { rootContainer, content, contentContainer, sideBars } = useStyles()
   return (
-    <div className={container}>
+    <div className={rootContainer} data-testid="root-container">
       <CssBaseline />
       <Head>
         <title>{title || "blitz-quiz-app"}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MyAppbar />
-      <Box padding={2}>{children}</Box>
+      <Box data-testid="content-container" className={contentContainer}>
+        <div className={sideBars} />
+        <Box data-testid="content" className={content} maxWidth="600" padding={2}>
+          {children}
+        </Box>
+        <div className={sideBars} />
+      </Box>
     </div>
   )
 }
@@ -27,8 +33,23 @@ const Layout = ({ title, children }: LayoutProps) => {
 export default Layout
 
 const useStyles = makeStyles({
-  container: {
+  rootContainer: {
     backgroundColor: "lightyellow",
     height: "100vh",
+    display: "grid",
+    gridTemplateRows: `52px auto`,
+  },
+  content: {
+    backgroundColor: "antiquewhite",
+    width: "80%",
+    maxWidth: "800px",
+    minWidth: "600px",
+  },
+  contentContainer: {
+    display: "flex",
+    justifyContent: "center",
+  },
+  sideBars: {
+    minWidth: 0,
   },
 })

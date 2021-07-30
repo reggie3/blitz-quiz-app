@@ -10,7 +10,7 @@ const MyClickableLink = ({ children, onClick }: Props) => {
   const { root } = useStyles()
 
   return (
-    <div className={root} onClick={onClick}>
+    <div className={root} onClick={onClick} role="link">
       {children}
     </div>
   )

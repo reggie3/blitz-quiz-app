@@ -89,11 +89,12 @@ model Question {
 }
 
 model Game {
-  id        Int        @id @default(autoincrement())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  name      String
-  questions Question[]
-  creator   User?      @relation(fields: [userId], references: [id])
-  userId    Int?
+  id          Int        @id @default(autoincrement())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  name        String
+  description String     @default("")
+  questions   Question[]
+  creator     User?      @relation(fields: [userId], references: [id])
+  userId      Int?
 }

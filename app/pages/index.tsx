@@ -6,6 +6,8 @@ import logout from "app/auth/mutations/logout"
 import ModalContainer from "app/core/components/myComponents/ModalContainer"
 import { Box } from "@material-ui/core"
 import { GamePlayControls } from "app/core/components/GamePlayControls"
+import { GamesList } from "./games"
+import GameDashboard from "app/core/components/gameDashboard/GameDashboard"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
@@ -60,6 +62,7 @@ const Home: BlitzPage = () => {
           <GamePlayControls />
         </Suspense>
       </Box>
+      <GameDashboard />
       <ModalContainer />
     </div>
   )

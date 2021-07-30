@@ -4,6 +4,7 @@ import { z } from "zod"
 
 const CreateGame = z.object({
   name: z.string(),
+  description: z.string(),
 })
 
 export default resolver.pipe(

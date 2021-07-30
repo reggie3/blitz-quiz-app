@@ -1,12 +1,15 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Head, Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
+import Alert from "@material-ui/lab/Alert"
 import getGame from "app/games/queries/getGame"
 import updateGame from "app/games/mutations/updateGame"
 import { GameForm, FORM_ERROR } from "app/games/components/GameForm"
+import { UpdateGame } from "app/validations"
+import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
 
 export const EditGame = () => {
-  const router = useRouter()
+  const [shouldShowSaveSuccess, setShouldShowSaveSuccess] = useState<boolean>(false)
   const gameId = useParam("gameId", "number")
   const [game, { setQueryData }] = useQuery(
     getGame,
@@ -18,22 +21,36 @@ export const EditGame = () => {
   )
   const [updateGameMutation] = useMutation(updateGame)
 
+  const onGameSaved = (id: number) => {
+    setShouldShowSaveSuccess(true)
+  }
+
   return (
     <>
+      {shouldShowSaveSuccess && (
+        <Alert
+          onClose={() => {
+            setShouldShowSaveSuccess(false)
+          }}
+        >
+          Game saved successfully
+        </Alert>
+      )}
+
       <Head>
-        <title>Edit Game {game.id}</title>
+        <title>{`Edit "${game.name}"`}</title>
       </Head>
 
       <div>
-        <h1>Edit Game {game.id}</h1>
-        <pre>{JSON.stringify(game)}</pre>
+        <h1>{`Edit "${game.name}"`}</h1>
+        <pre>{JSON.stringify(game, null, 2)}</pre>
 
         <GameForm
           submitText="Update Game"
           // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
           //         then import and use it here
-          // schema={UpdateGame}
+          schema={UpdateGame}
           initialValues={game}
           onSubmit={async (values) => {
             try {
@@ -42,7 +59,8 @@ export const EditGame = () => {
                 ...values,
               })
               await setQueryData(updated)
-              router.push(Routes.ShowGamePage({ gameId: updated.id }))
+
+              onGameSaved(updated.id)
             } catch (error) {
               console.error(error)
               return {
@@ -57,6 +75,8 @@ export const EditGame = () => {
 }
 
 const EditGamePage: BlitzPage = () => {
+  const router = useRouter()
+
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
@@ -64,9 +84,7 @@ const EditGamePage: BlitzPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.GamesPage()}>
-          <a>Games</a>
-        </Link>
+        <MyClickableLink onClick={() => router.push("/")}>Games</MyClickableLink>
       </p>
     </div>
   )
