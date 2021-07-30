@@ -14,7 +14,7 @@ export const GamePlayControls = (props: Props) => {
   const { showBorders } = useSelector((state: RootState) => state.debugging)
 
   const onClickMakeGame = () => {
-    router.push("/make-games")
+    //router.push("/make-games")
   }
 
   const onClickStartGame = () => {}
