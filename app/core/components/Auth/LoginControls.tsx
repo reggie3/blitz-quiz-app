@@ -1,7 +1,7 @@
-import { Box, Button, Typography } from "@material-ui/core"
+import { Button } from "@material-ui/core"
 import logout from "app/auth/mutations/logout"
 import { ModalNames, showModal } from "app/redux/modalSlice"
-import { useMutation } from "blitz"
+import { Routes, useMutation, useRouter } from "blitz"
 import React from "react"
 import { useDispatch } from "react-redux"
 import { useCurrentUser } from "../../hooks/useCurrentUser"
@@ -9,6 +9,7 @@ import { useCurrentUser } from "../../hooks/useCurrentUser"
 interface Props {}
 
 export const LoginControls = (props: Props) => {
+  const router = useRouter()
   const currentUser = useCurrentUser()
   const [logoutMutation] = useMutation(logout)
   const dispatch = useDispatch()
@@ -19,6 +20,7 @@ export const LoginControls = (props: Props) => {
 
   const onClickLogout = async () => {
     await logoutMutation()
+    router.push(Routes.Home())
   }
 
   if (currentUser) {
