@@ -1,12 +1,15 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Head, Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getAnswer from "app/answers/queries/getAnswer"
 import updateAnswer from "app/answers/mutations/updateAnswer"
 import { AnswerForm, FORM_ERROR } from "app/answers/components/AnswerForm"
+import Alert from "@material-ui/lab/Alert"
+import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
+import { UpdateAnswer } from "app/validations"
 
 export const EditAnswer = () => {
-  const router = useRouter()
+  const [shouldShowSaveSuccess, setShouldShowSaveSuccess] = useState<boolean>(false)
   const answerId = useParam("answerId", "number")
   const [answer, { setQueryData }] = useQuery(
     getAnswer,
@@ -18,8 +21,21 @@ export const EditAnswer = () => {
   )
   const [updateAnswerMutation] = useMutation(updateAnswer)
 
+  const onAnswerSaved = (id: number) => {
+    setShouldShowSaveSuccess(true)
+  }
+
   return (
     <>
+      {shouldShowSaveSuccess && (
+        <Alert
+          onClose={() => {
+            setShouldShowSaveSuccess(false)
+          }}
+        >
+          Answer saved successfully
+        </Alert>
+      )}
       <Head>
         <title>Edit Answer {answer.id}</title>
       </Head>
@@ -33,16 +49,18 @@ export const EditAnswer = () => {
           // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
           //         then import and use it here
-          // schema={UpdateAnswer}
+          schema={UpdateAnswer}
           initialValues={answer}
           onSubmit={async (values) => {
             try {
               const updated = await updateAnswerMutation({
+                // @ts-ignore id is specified more than once
                 id: answer.id,
                 ...values,
               })
               await setQueryData(updated)
-              router.push(Routes.ShowAnswerPage({ answerId: updated.id }))
+
+              onAnswerSaved(updated.id)
             } catch (error) {
               console.error(error)
               return {
@@ -57,6 +75,8 @@ export const EditAnswer = () => {
 }
 
 const EditAnswerPage: BlitzPage = () => {
+  const router = useRouter()
+
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
@@ -64,9 +84,7 @@ const EditAnswerPage: BlitzPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.AnswersPage()}>
-          <a>Answers</a>
-        </Link>
+        <MyClickableLink onClick={() => router.push("/")}>Answers</MyClickableLink>
       </p>
     </div>
   )

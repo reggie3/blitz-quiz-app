@@ -1,32 +1,32 @@
 import { Box, IconButton, Paper, Typography } from "@material-ui/core"
 import { Routes, useMutation, useRouter } from "blitz"
-import { Game } from "db"
+import { Game, Answer } from "db"
 import React, { Suspense } from "react"
 import MyButton from "../myComponents/MyButton"
 import MySubTitle from "../myComponents/MyTopography/MySubTitle"
 import DeleteIcon from "@material-ui/icons/Delete"
-import deleteGame from "app/questions/mutations/deleteQuestion"
+import deleteAnswer from "app/answers/mutations/deleteAnswer"
 
 interface Props {
-  game: Game
+  answer: Answer
   refetch: () => void
 }
 
-const GameCard = ({ game, refetch }: Props) => {
+const AnswerCard = ({ answer, refetch }: Props) => {
   const router = useRouter()
+  const [deleteAnswerMutation] = useMutation(deleteAnswer)
 
-  const { createdAt, description, id, name, updatedAt } = game
-  const [deleteGameMutation] = useMutation(deleteGame)
+  const { createdAt, text, id, updatedAt } = answer
 
   const onClickDelete = async (id: number) => {
     if (window.confirm("This will be deleted")) {
-      await deleteGameMutation({ id })
+      await deleteAnswerMutation({ id })
       refetch()
     }
   }
 
   const onClickEdit = (id: number) => {
-    router.push(Routes.EditGamePage({ gameId: id }))
+    router.push(Routes.EditAnswerPage({ answerId: id }))
   }
 
   const onClickStart = (id: number) => {}
@@ -36,14 +36,11 @@ const GameCard = ({ game, refetch }: Props) => {
       <Paper>
         <Box display="flex" flexDirection="row" justifyContent="space-between" padding={0.5}>
           <Box display="flex" flexDirection="column">
-            <Typography variant="h6">{name}</Typography>
-            {description && <Typography variant="body1">{description}</Typography>}
+            {text && <Typography variant="body1">{text}</Typography>}
             <MySubTitle>Created: {createdAt.toLocaleDateString()}</MySubTitle>
             <MySubTitle>Updated: {updatedAt.toLocaleDateString()}</MySubTitle>
           </Box>
           <Box display="flex" alignItems="center">
-            <MyButton onClick={() => onClickStart(id)}>Start</MyButton>
-            <Box width={1} />
             <MyButton onClick={() => onClickEdit(id)}>Edit</MyButton>
             <IconButton onClick={() => onClickDelete(id)}>
               <DeleteIcon />
@@ -55,4 +52,4 @@ const GameCard = ({ game, refetch }: Props) => {
   )
 }
 
-export default GameCard
+export default AnswerCard

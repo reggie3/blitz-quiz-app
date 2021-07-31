@@ -3,7 +3,7 @@ import db from "db"
 import { z } from "zod"
 
 const CreateAnswer = z.object({
-  name: z.string(),
+  text: z.string(),
 })
 
 export default resolver.pipe(resolver.zod(CreateAnswer), resolver.authorize(), async (input) => {

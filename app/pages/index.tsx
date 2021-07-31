@@ -14,47 +14,49 @@ import GameDashboard from "app/core/components/gameDashboard/GameDashboard"
  * You can delete everything in here and start from scratch if you like.
  */
 
-const UserInfo = () => {
-  const currentUser = useCurrentUser()
-  const [logoutMutation] = useMutation(logout)
+// const UserInfo = () => {
+//   const currentUser = useCurrentUser()
+//   const [logoutMutation] = useMutation(logout)
 
-  if (currentUser) {
-    return (
-      <>
-        <button
-          className="button small"
-          onClick={async () => {
-            await logoutMutation()
-          }}
-        >
-          Logout
-        </button>
-        <div>
-          User id: <code>{currentUser.id}</code>
-          <br />
-          User role: <code>{currentUser.role}</code>
-        </div>
-      </>
-    )
-  } else {
-    return (
-      <>
-        <Link href={Routes.SignupPage()}>
-          <a className="button small">
-            <strong>Sign Up</strong>
-          </a>
-        </Link>
-        <Link href={Routes.LoginPage()}>
-          <a className="button small">
-            <strong>Login</strong>
-          </a>
-        </Link>
-      </>
-    )
-  }
-}
+//   if (currentUser) {
+//     return (
+//       <>
+//         <button
+//           className="button small"
+//           onClick={async () => {
+//             await logoutMutation()
+//           }}
+//         >
+//           Logout
+//         </button>
+//         <div>
+//           User id: <code>{currentUser.id}</code>
+//           <br />
+//           User role: <code>{currentUser.role}</code>
+//         </div>
+//       </>
+//     )
+//   } else {
+//     return (
+//       <>
+//         <Link href={Routes.SignupPage()}>
+//           <a className="button small">
+//             <strong>Sign Up</strong>
+//           </a>
+//         </Link>
+//         <Link href={Routes.LoginPage()}>
+//           <a className="button small">
+//             <strong>Login</strong>
+//           </a>
+//         </Link>
+//       </>
+//     )
+//   }
+// }
 
 const Home: BlitzPage = () => {
+  //const currentUser = useCurrentUser()
+
   return (
     <div className="container" data-testid="index-page">
       <Box flex={2} padding={2}>
@@ -62,7 +64,9 @@ const Home: BlitzPage = () => {
           <GamePlayControls />
         </Suspense>
       </Box>
-      <GameDashboard />
+      <Suspense fallback="Loading...">
+        <GameDashboard />
+      </Suspense>
       <ModalContainer />
     </div>
   )

@@ -1,12 +1,14 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Head, Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getQuestion from "app/questions/queries/getQuestion"
-import updateQuestion from "app/questions/mutations/updateQuestion"
+import updateQuestion, { UpdateQuestion } from "app/questions/mutations/updateQuestion"
 import { QuestionForm, FORM_ERROR } from "app/questions/components/QuestionForm"
+import Alert from "@material-ui/lab/Alert"
+import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
 
 export const EditQuestion = () => {
-  const router = useRouter()
+  const [shouldShowSaveSuccess, setShouldShowSaveSuccess] = useState<boolean>(false)
   const questionId = useParam("questionId", "number")
   const [question, { setQueryData }] = useQuery(
     getQuestion,
@@ -18,8 +20,21 @@ export const EditQuestion = () => {
   )
   const [updateQuestionMutation] = useMutation(updateQuestion)
 
+  const onQuestionSaved = (id: number) => {
+    setShouldShowSaveSuccess(true)
+  }
+
   return (
     <>
+      {shouldShowSaveSuccess && (
+        <Alert
+          onClose={() => {
+            setShouldShowSaveSuccess(false)
+          }}
+        >
+          Question saved successfully
+        </Alert>
+      )}
       <Head>
         <title>Edit Question {question.id}</title>
       </Head>
@@ -33,16 +48,17 @@ export const EditQuestion = () => {
           // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
           //         then import and use it here
-          // schema={UpdateQuestion}
+          schema={UpdateQuestion}
           initialValues={question}
           onSubmit={async (values) => {
             try {
               const updated = await updateQuestionMutation({
+                // @ts-ignore id is specified more than once
                 id: question.id,
                 ...values,
               })
               await setQueryData(updated)
-              router.push(Routes.ShowQuestionPage({ questionId: updated.id }))
+              onQuestionSaved(updated.id)
             } catch (error) {
               console.error(error)
               return {
@@ -57,6 +73,8 @@ export const EditQuestion = () => {
 }
 
 const EditQuestionPage: BlitzPage = () => {
+  const router = useRouter()
+
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
@@ -64,9 +82,7 @@ const EditQuestionPage: BlitzPage = () => {
       </Suspense>
 
       <p>
-        <Link href={Routes.QuestionsPage()}>
-          <a>Questions</a>
-        </Link>
+        <MyClickableLink onClick={() => router.push("/")}>Questions</MyClickableLink>
       </p>
     </div>
   )

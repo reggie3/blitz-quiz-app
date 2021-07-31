@@ -1,2 +1,6 @@
 export { UpdateGame } from "./games/mutations/updateGame"
 export { CreateGame } from "./games/mutations/createGame"
+export { UpdateQuestion } from "./questions/mutations/updateQuestion"
+export { CreateQuestion } from "./questions/mutations/createQuestion"
+export { UpdateAnswer } from "./answers/mutations/updateAnswer"
+export { CreateAnswer } from "./answers/mutations/createAnswer"

@@ -81,11 +81,11 @@ model Question {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   text          String
-  correctAnswer Answer   @relation(name: "correctAnswer", fields: [answerId], references: [id])
+  correctAnswer Answer?  @relation(name: "correctAnswer", fields: [answerId], references: [id])
   wrongAnswers  Answer[] @relation(name: "wrongAnswers")
   gameId        Int?
   game          Game?    @relation(fields: [gameId], references: [id])
-  answerId      Int
+  answerId      Int?
 }
 
 model Game {

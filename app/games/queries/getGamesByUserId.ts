@@ -1,4 +1,4 @@
-import { paginate, resolver } from "blitz"
+import { Ctx, paginate, resolver } from "blitz"
 import db, { Prisma } from "db"
 
 interface GetGamesInput
@@ -6,8 +6,8 @@ interface GetGamesInput
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetGamesInput) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+  async ({ where, orderBy, skip = 0, take = 100 }: GetGamesInput, ctx: Ctx) => {
+    const query = { userId: ctx.session.userId }
     const {
       items: games,
       hasMore,
@@ -16,8 +16,8 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.game.count({ where }),
-      query: (paginateArgs) => db.game.findMany({ ...paginateArgs, where, orderBy }),
+      count: () => db.game.count({ where: query }),
+      query: (paginateArgs) => db.game.findMany({ ...paginateArgs, where: query, orderBy }),
     })
 
     return {

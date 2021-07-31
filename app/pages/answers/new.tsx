@@ -1,7 +1,9 @@
-import { Link, useRouter, useMutation, BlitzPage, Routes } from "blitz"
+import { useRouter, useMutation, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import createAnswer from "app/answers/mutations/createAnswer"
 import { AnswerForm, FORM_ERROR } from "app/answers/components/AnswerForm"
+import { CreateAnswer } from "app/validations"
+import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
 
 const NewAnswerPage: BlitzPage = () => {
   const router = useRouter()
@@ -16,12 +18,12 @@ const NewAnswerPage: BlitzPage = () => {
         // TODO use a zod schema for form validation
         //  - Tip: extract mutation's schema into a shared `validations.ts` file and
         //         then import and use it here
-        // schema={CreateAnswer}
+        schema={CreateAnswer}
         // initialValues={{}}
         onSubmit={async (values) => {
           try {
             const answer = await createAnswerMutation(values)
-            router.push(Routes.ShowAnswerPage({ answerId: answer.id }))
+            router.push(Routes.Home())
           } catch (error) {
             console.error(error)
             return {
@@ -32,9 +34,7 @@ const NewAnswerPage: BlitzPage = () => {
       />
 
       <p>
-        <Link href={Routes.AnswersPage()}>
-          <a>Answers</a>
-        </Link>
+        <MyClickableLink onClick={() => router.push("/")}>Answers</MyClickableLink>
       </p>
     </div>
   )

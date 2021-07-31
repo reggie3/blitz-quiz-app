@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react"
-import { Head, Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
+import { Head, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import Alert from "@material-ui/lab/Alert"
 import getGame from "app/games/queries/getGame"
@@ -55,6 +55,7 @@ export const EditGame = () => {
           onSubmit={async (values) => {
             try {
               const updated = await updateGameMutation({
+                // @ts-ignore id is specified more than once
                 id: game.id,
                 ...values,
               })

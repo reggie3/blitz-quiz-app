@@ -2,7 +2,7 @@ import { Ctx, resolver } from "blitz"
 import db from "db"
 import { z } from "zod"
 
-const CreateGame = z.object({
+export const CreateGame = z.object({
   name: z.string(),
   description: z.string(),
 })
