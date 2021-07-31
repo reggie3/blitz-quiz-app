@@ -1,51 +1,38 @@
-import { Box, Button, makeStyles } from "@material-ui/core"
+import { Box, Button, makeStyles, Tab, Tabs } from "@material-ui/core"
 import { blue } from "@material-ui/core/colors"
+import { RootState } from "app/redux/store"
 import { DashboardViews, setDashboardView } from "app/redux/uiSlice"
 import React from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 interface Props {}
 
 const DashboardHeader = (props: Props) => {
   const { button } = useStyles()
   const dispatch = useDispatch()
+  const { dashboardView } = useSelector((state: RootState) => state.ui)
 
   const onClick = (view: DashboardViews) => {
     dispatch(setDashboardView(view))
   }
 
+  const handleChange = (_event, newValue: DashboardViews) => {
+    console.log("newValue", newValue)
+    dispatch(setDashboardView(newValue))
+  }
+
   return (
-    <Box
-      display="flex"
-      borderBottom={`1px solid ${blue[900]}`}
-      flexDirection="row"
-      justifyContent="flex-start"
-      marginBottom={1}
-    >
-      <Button
-        variant="contained"
-        color="primary"
-        className={button}
-        onClick={() => onClick(DashboardViews.GAMES)}
+    <Box marginBottom={1}>
+      <Tabs
+        value={dashboardView}
+        indicatorColor="primary"
+        textColor="primary"
+        onChange={handleChange}
       >
-        Games
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        className={button}
-        onClick={() => onClick(DashboardViews.QUESTIONS)}
-      >
-        Questions
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        className={button}
-        onClick={() => onClick(DashboardViews.ANSWERS)}
-      >
-        Answers
-      </Button>
+        <Tab label="Games" value={DashboardViews.GAMES} />
+        <Tab label="Questions" value={DashboardViews.QUESTIONS} />
+        <Tab label="Answers" value={DashboardViews.ANSWERS} />
+      </Tabs>
     </Box>
   )
 }

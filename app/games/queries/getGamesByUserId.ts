@@ -1,13 +1,14 @@
 import { Ctx, paginate, resolver } from "blitz"
 import db, { Prisma } from "db"
 
-interface GetGamesInput
+interface GetGamesByUserIdInput
   extends Pick<Prisma.GameFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetGamesInput, ctx: Ctx) => {
+  async ({ where, orderBy, skip = 0, take = 100 }: GetGamesByUserIdInput, ctx: Ctx) => {
     const query = { userId: ctx.session.userId }
+
     const {
       items: games,
       hasMore,

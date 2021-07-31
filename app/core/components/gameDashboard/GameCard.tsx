@@ -1,4 +1,4 @@
-import { Box, IconButton, Paper, Typography } from "@material-ui/core"
+import { Box, Button, IconButton, makeStyles, Paper, Typography } from "@material-ui/core"
 import { Routes, useMutation, useRouter } from "blitz"
 import { Game } from "db"
 import React, { Suspense } from "react"
@@ -6,6 +6,9 @@ import MyButton from "../myComponents/MyButton"
 import MySubTitle from "../myComponents/MyTopography/MySubTitle"
 import DeleteIcon from "@material-ui/icons/Delete"
 import deleteGame from "app/questions/mutations/deleteQuestion"
+import EditIcon from "@material-ui/icons/Edit"
+import PlayArrowIcon from "@material-ui/icons/PlayArrow"
+import HelpIcon from "@material-ui/icons/Help"
 
 interface Props {
   game: Game
@@ -14,7 +17,7 @@ interface Props {
 
 const GameCard = ({ game, refetch }: Props) => {
   const router = useRouter()
-
+  const { button } = useStyles()
   const { createdAt, description, id, name, updatedAt } = game
   const [deleteGameMutation] = useMutation(deleteGame)
 
@@ -31,6 +34,8 @@ const GameCard = ({ game, refetch }: Props) => {
 
   const onClickStart = (id: number) => {}
 
+  const onClickQuestions = (id: number) => {}
+
   return (
     <Box key={id} mt={1}>
       <Paper>
@@ -42,9 +47,38 @@ const GameCard = ({ game, refetch }: Props) => {
             <MySubTitle>Updated: {updatedAt.toLocaleDateString()}</MySubTitle>
           </Box>
           <Box display="flex" alignItems="center">
-            <MyButton onClick={() => onClickStart(id)}>Start</MyButton>
-            <Box width={1} />
-            <MyButton onClick={() => onClickEdit(id)}>Edit</MyButton>
+            <Button
+              onClick={() => onClickStart(id)}
+              size="small"
+              variant="contained"
+              color="primary"
+              className={button}
+              startIcon={<PlayArrowIcon />}
+            >
+              Start
+            </Button>
+
+            <Button
+              onClick={() => onClickEdit(id)}
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<EditIcon />}
+              className={button}
+            >
+              Edit
+            </Button>
+
+            <Button
+              onClick={() => onClickQuestions(id)}
+              variant="contained"
+              color="primary"
+              size="small"
+              startIcon={<HelpIcon />}
+              className={button}
+            >
+              Questions
+            </Button>
             <IconButton onClick={() => onClickDelete(id)}>
               <DeleteIcon />
             </IconButton>
@@ -56,3 +90,9 @@ const GameCard = ({ game, refetch }: Props) => {
 }
 
 export default GameCard
+
+const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: theme.spacing(1),
+  },
+}))

@@ -1,6 +1,6 @@
-import getQuestions from "app/questions/queries/getQuestions"
+import React, { useState } from "react"
+import getQuestionsByUserId from "app/questions/queries/getQuestionsByUserId"
 import { Routes, usePaginatedQuery, useRouter } from "blitz"
-import React from "react"
 import ListHeader from "../myComponents/ListHeader"
 import AddIcon from "@material-ui/icons/Add"
 import { Question } from "db"
@@ -12,8 +12,9 @@ const ITEMS_PER_PAGE = 20
 
 const MyQuestionsList = (props: Props) => {
   const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const [{ questions, hasMore }, { refetch }] = usePaginatedQuery(getQuestions, {
+
+  const [page, setPage] = useState<number>(0)
+  const [{ questions, hasMore }, { refetch }] = usePaginatedQuery(getQuestionsByUserId, {
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -41,9 +42,11 @@ const MyQuestionsList = (props: Props) => {
           },
         ]}
       />
-      {questions.map((question: Question) => (
-        <QuestionCard key={question.id} question={question} refetch={refetch} />
-      ))}
+      {!questions?.length && <p>No questions yet.</p>}
+      {Boolean(questions?.length) &&
+        questions.map((question: Question) => (
+          <QuestionCard key={question.id} question={question} refetch={refetch} />
+        ))}
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { Box, Button, makeStyles } from "@material-ui/core"
+import { green } from "@material-ui/core/colors"
 import React, { ReactElement } from "react"
 
 type ButtonProps = {
@@ -57,5 +58,5 @@ const ListHeader = ({ startButtonProps = [], endButtonProps = [] }: Props) => {
 export default ListHeader
 
 const useStyles = makeStyles({
-  button: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
+  button: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, backgroundColor: green[300] },
 })
