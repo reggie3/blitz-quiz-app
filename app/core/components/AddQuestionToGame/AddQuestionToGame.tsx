@@ -1,10 +1,14 @@
 import { Box, CircularProgress, IconButton, TextField } from "@material-ui/core"
-import React, { useEffect, useState } from "react"
+import React, { KeyboardEvent, useEffect, useState } from "react"
 import { useDebounce } from "use-debounce"
-import SaveIcon from "@material-ui/icons/Save"
-import { useQuery } from "blitz"
+import { useMutation, useQuery } from "blitz"
 import getQuestionsBySearchText from "app/questions/queries/getQuestionsBySearchText"
 import { Autocomplete } from "@material-ui/lab"
+import { Question } from "db"
+import createQuestion from "app/questions/mutations/createQuestion"
+import updateGame from "app/games/mutations/updateGame"
+import MySearchField from "../myComponents/MySearchField"
+
 interface Props {
   isVisible: boolean
 }
@@ -18,14 +22,12 @@ const AddQuestionToGame = ({ isVisible }: Props) => {
     { searchValue },
     { enabled: Boolean(searchValue) }
   )
+  const [isOpen, setIsOpen] = useState(false)
+  const [value, setValue] = useState<Question | null>(null)
+  const [createQuestionMutation] = useMutation(createQuestion)
+  const [updateGameMutation] = useMutation(updateGame)
 
-  useEffect(() => {
-    if (status === "loading") {
-      setIsSearching(true)
-    } else {
-      setIsSearching(false)
-    }
-  }, [status])
+  const isLoading = status.toLowerCase() === "loading"
 
   useEffect(() => {
     console.log("questions", questions)
@@ -35,8 +37,16 @@ const AddQuestionToGame = ({ isVisible }: Props) => {
     console.log("searchValue in useEffect", searchValue)
   }, [searchValue])
 
+  useEffect(() => {
+    console.log("value in useEffect", value)
+  }, [value])
+
   const onClickSave = () => {
     setInputValue("")
+  }
+
+  const onQuestionSelected = (question: Question) => {
+    console.log("onQuestionSelected question", question)
   }
 
   if (!isVisible) return null
@@ -44,40 +54,42 @@ const AddQuestionToGame = ({ isVisible }: Props) => {
   return (
     <Box mx={1} borderTop="1px solid lightgray" padding={1}>
       <Box display="flex" flex="row" alignItems="center">
-        <Box flex="1">
-          <Autocomplete
-            data-testid="search-auto-complete"
-            fullWidth
-            options={questions ?? []}
-            freeSolo
+        <Box flex="1" marginLeft={2}>
+          <MySearchField
+            testId="add-question-to-game-search-field"
+            getOptionLabel={(option) => {
+              return option?.text ?? ""
+            }}
+            getOptionSelected={(option, value) => option.text === value.text}
             inputValue={inputValue}
+            isLoading={isLoading}
+            isOpen={isOpen}
+            onClose={() => {
+              setIsOpen(false)
+            }}
+            onChange={(event, newValue) => {
+              if (typeof newValue === "string") {
+                setValue({
+                  id: 0,
+                  text: newValue,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                } as Question)
+              } else {
+                setValue(newValue)
+              }
+            }}
             onInputChange={(event, newInputValue) => {
               setInputValue(newInputValue)
             }}
-            getOptionLabel={(option) => {
-              return option.text
+            onOpen={() => {
+              setIsOpen(true)
             }}
-            renderInput={(params) => (
-              <TextField
-                data-testid="search-auto-complete-input"
-                {...params}
-                placeholder="Question"
-                value={inputValue}
-                fullWidth
-              />
-            )}
+            options={questions ?? []}
+            textKey="text"
+            value={value}
           />
         </Box>
-        {isSearching && (
-          <Box mx={1} width={20} height={20}>
-            <CircularProgress size={18} />
-          </Box>
-        )}
-        {!isSearching && (
-          <IconButton onClick={onClickSave} size="small">
-            <SaveIcon style={{ fontSize: 18 }} />
-          </IconButton>
-        )}
       </Box>
     </Box>
   )
