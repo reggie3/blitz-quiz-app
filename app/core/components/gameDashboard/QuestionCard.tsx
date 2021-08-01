@@ -34,7 +34,13 @@ const QuestionCard = ({ question, refetch }: Props) => {
   return (
     <Box key={id} mt={1}>
       <Paper>
-        <Box display="flex" flexDirection="row" justifyContent="space-between" padding={0.5}>
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          padding={0.5}
+          borderBottom="1px solid lightgray"
+        >
           <Box display="flex" flexDirection="column">
             {text && <Typography variant="body1">{text}</Typography>}
             <MySubTitle>Created: {createdAt.toLocaleDateString()}</MySubTitle>

@@ -39,6 +39,7 @@
     "react-dom": "alpha",
     "react-final-form": "6.5.3",
     "react-redux": "7.2.4",
+    "use-debounce": "7.0.0",
     "zod": "3.5.1"
   },
   "devDependencies": {
