@@ -2,16 +2,15 @@ import { resolver, NotFoundError, Ctx } from "blitz"
 import db from "db"
 import { z } from "zod"
 
-const GetQuestionsBySearchText = z.object({
-  // This accepts type of undefined, but is required at runtime
+const GetAnswersBySearchText = z.object({
   searchValue: z.string(),
 })
 
 export default resolver.pipe(
-  resolver.zod(GetQuestionsBySearchText),
+  resolver.zod(GetAnswersBySearchText),
   resolver.authorize(),
   async ({ searchValue }, ctx: Ctx) => {
-    const questions = await db.question.findMany({
+    const answers = await db.answer.findMany({
       where: {
         AND: [
           { creatorId: { equals: ctx.session.userId } },
@@ -24,8 +23,8 @@ export default resolver.pipe(
       },
     })
 
-    if (!questions) throw new NotFoundError()
+    if (!answers) throw new NotFoundError()
 
-    return questions
+    return answers
   }
 )

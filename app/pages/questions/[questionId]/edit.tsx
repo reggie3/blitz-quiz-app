@@ -9,7 +9,7 @@ import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
 
 export const EditQuestion = () => {
   const [shouldShowSaveSuccess, setShouldShowSaveSuccess] = useState<boolean>(false)
-  const questionId = useParam("questionId", "number")
+  const questionId = useParam("questionId", "string")
   const [question, { setQueryData }] = useQuery(
     getQuestion,
     { id: questionId },
@@ -20,7 +20,7 @@ export const EditQuestion = () => {
   )
   const [updateQuestionMutation] = useMutation(updateQuestion)
 
-  const onQuestionSaved = (id: number) => {
+  const onQuestionSaved = () => {
     setShouldShowSaveSuccess(true)
   }
 
@@ -58,7 +58,7 @@ export const EditQuestion = () => {
                 ...values,
               })
               await setQueryData(updated)
-              onQuestionSaved(updated.id)
+              onQuestionSaved()
             } catch (error) {
               console.error(error)
               return {

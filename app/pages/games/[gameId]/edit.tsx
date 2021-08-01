@@ -10,7 +10,7 @@ import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
 
 export const EditGame = () => {
   const [shouldShowSaveSuccess, setShouldShowSaveSuccess] = useState<boolean>(false)
-  const gameId = useParam("gameId", "number")
+  const gameId = useParam("gameId", "string")
   const [game, { setQueryData }] = useQuery(
     getGame,
     { id: gameId },
@@ -21,7 +21,7 @@ export const EditGame = () => {
   )
   const [updateGameMutation] = useMutation(updateGame)
 
-  const onGameSaved = (id: number) => {
+  const onGameSaved = () => {
     setShouldShowSaveSuccess(true)
   }
 
@@ -61,7 +61,7 @@ export const EditGame = () => {
               })
               await setQueryData(updated)
 
-              onGameSaved(updated.id)
+              onGameSaved()
             } catch (error) {
               console.error(error)
               return {

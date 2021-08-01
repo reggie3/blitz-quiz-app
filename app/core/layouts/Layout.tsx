@@ -34,13 +34,13 @@ export default Layout
 
 const useStyles = makeStyles({
   rootContainer: {
-    backgroundColor: "lightyellow",
+    backgroundColor: "whitesmoke",
     height: "100vh",
     display: "grid",
     gridTemplateRows: `52px auto`,
   },
   content: {
-    backgroundColor: "antiquewhite",
+    backgroundColor: "powderblue",
     width: "80%",
     maxWidth: "800px",
     minWidth: "600px",

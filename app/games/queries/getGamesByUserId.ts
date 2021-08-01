@@ -7,7 +7,7 @@ interface GetGamesByUserIdInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetGamesByUserIdInput, ctx: Ctx) => {
-    const query = { userId: ctx.session.userId }
+    const query = { creatorId: ctx.session.userId }
 
     const {
       items: games,

@@ -4,6 +4,8 @@ import { z } from "zod"
 
 export const CreateQuestion = z.object({
   text: z.string(),
+  gameIds: z.string().array().optional(),
+  creatorId: z.string().optional().nullable(),
 })
 
 export default resolver.pipe(
@@ -12,7 +14,7 @@ export default resolver.pipe(
   async (input, ctx: Ctx) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const question = await db.question.create({
-      data: { ...input, userId: ctx.session.userId },
+      data: { ...input, creatorId: ctx.session.userId },
     })
 
     return question

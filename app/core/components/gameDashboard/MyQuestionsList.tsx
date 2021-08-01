@@ -5,20 +5,43 @@ import ListHeader from "../myComponents/ListHeader"
 import AddIcon from "@material-ui/icons/Add"
 import { Question } from "db"
 import QuestionCard from "./QuestionCard"
+import getQuestionsByGameId from "app/questions/queries/getQuestionsByGameId"
 
-interface Props {}
+interface Props {
+  gameId?: string
+  shouldShowHeader?: boolean
+}
 
 const ITEMS_PER_PAGE = 20
 
-const MyQuestionsList = (props: Props) => {
-  const router = useRouter()
+const getQuery = (gameId?: string) => {
+  if (gameId) {
+    return getQuestionsByGameId
+  }
 
-  const [page, setPage] = useState<number>(0)
-  const [{ questions, hasMore }, { refetch }] = usePaginatedQuery(getQuestionsByUserId, {
+  return getQuestionsByUserId
+}
+
+const getQueryInfo = (page: number, gameId?: string) => {
+  const baseQuery = {
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
-  })
+  }
+  if (Boolean(gameId)) {
+    return { ...baseQuery, where: { gameIds: { has: gameId } } }
+  }
+  return baseQuery
+}
+
+const MyQuestionsList = ({ gameId, shouldShowHeader = true }: Props) => {
+  const router = useRouter()
+
+  const [page, setPage] = useState<number>(0)
+  const [{ questions, hasMore }, { refetch }] = usePaginatedQuery(
+    getQuery(gameId),
+    getQueryInfo(page, gameId)
+  )
 
   const goToPreviousPage = () => {
     //  router.push({ query: { page: page - 1 } })
@@ -33,15 +56,17 @@ const MyQuestionsList = (props: Props) => {
 
   return (
     <div>
-      <ListHeader
-        startButtonProps={[
-          {
-            icon: <AddIcon />,
-            label: "Create New Question",
-            onClick: onClickNewQuestion,
-          },
-        ]}
-      />
+      {shouldShowHeader && (
+        <ListHeader
+          startButtonProps={[
+            {
+              icon: <AddIcon />,
+              label: "Create New Question",
+              onClick: onClickNewQuestion,
+            },
+          ]}
+        />
+      )}
       {!questions?.length && <p>No questions yet.</p>}
       {Boolean(questions?.length) &&
         questions.map((question: Question) => (

@@ -1,13 +1,12 @@
-import { resolver, NotFoundError, Ctx, paginate } from "blitz"
+import { paginate, resolver } from "blitz"
 import db, { Prisma } from "db"
 
-interface GetAnswersByUserIdInput
+interface GetAnswersByAnswerIdInput
   extends Pick<Prisma.AnswerFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100 }: GetAnswersByUserIdInput, ctx: Ctx) => {
-    const query = { creatorId: ctx.session.userId }
+  async ({ where, orderBy, skip = 0, take = 100 }: GetAnswersByAnswerIdInput) => {
     const {
       items: answers,
       hasMore,
@@ -16,8 +15,8 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.answer.count({ where: query }),
-      query: (paginateArgs) => db.answer.findMany({ ...paginateArgs, where: query, orderBy }),
+      count: () => db.answer.count({ where }),
+      query: (paginateArgs) => db.answer.findMany({ ...paginateArgs, where, orderBy }),
     })
 
     return {

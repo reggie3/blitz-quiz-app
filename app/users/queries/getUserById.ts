@@ -3,7 +3,7 @@ import db, { User } from "db"
 export default async function getUserById({
   userId,
 }: {
-  userId: number | null
+  userId: string | null
 }): Promise<Partial<User> | null> {
   console.log("userId", userId)
   if (!userId) return null

@@ -3,8 +3,11 @@ import db from "db"
 import { z } from "zod"
 
 export const UpdateQuestion = z.object({
-  id: z.number(),
-  text: z.string(),
+  id: z.string(),
+  text: z.string().optional(),
+  correctAnswerId: z.string().optional(),
+  gameIds: z.string().array().optional(),
+  answerIds: z.string().array().optional(),
 })
 
 export default resolver.pipe(

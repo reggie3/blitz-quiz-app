@@ -22,23 +22,13 @@ const GameDashboard = () => {
   return (
     <div data-testid="game-dashboard-container">
       <DashboardHeader />
-      <Box px={1}>
-        {dashboardView === DashboardViews.GAMES && (
-          <Suspense fallback={<div>Loading...</div>}>
-            <MyGamesList />
-          </Suspense>
-        )}
-        {dashboardView === DashboardViews.QUESTIONS && (
-          <Suspense fallback={<div>Loading...</div>}>
-            <MyQuestionsList />
-          </Suspense>
-        )}
-        {dashboardView === DashboardViews.ANSWERS && (
-          <Suspense fallback={<div>Loading...</div>}>
-            <MyAnswersList />
-          </Suspense>
-        )}
-      </Box>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Box px={1}>
+          {dashboardView === DashboardViews.GAMES && <MyGamesList />}
+          {dashboardView === DashboardViews.QUESTIONS && <MyQuestionsList />}
+          {dashboardView === DashboardViews.ANSWERS && <MyAnswersList />}
+        </Box>
+      </Suspense>
     </div>
   )
 }
