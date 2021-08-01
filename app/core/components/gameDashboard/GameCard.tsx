@@ -9,6 +9,7 @@ import EditIcon from "@material-ui/icons/Edit"
 import PlayArrowIcon from "@material-ui/icons/PlayArrow"
 import HelpIcon from "@material-ui/icons/Help"
 import AddQuestionToGame from "../AddQuestionToGame/AddQuestionToGame"
+import MyQuestionsList from "./MyQuestionsList"
 
 interface Props {
   game: Game
@@ -35,7 +36,7 @@ const GameCard = ({ game, refetch }: Props) => {
 
   const onClickStart = (id: string) => {}
 
-  const onClickQuestions = (id: string) => {
+  const onClickQuestions = (g) => {
     setShouldShowAddQuestion((prev) => !prev)
   }
 
@@ -45,7 +46,7 @@ const GameCard = ({ game, refetch }: Props) => {
         <Box display="flex" flexDirection="column">
           <Box display="flex" flexDirection="row" justifyContent="space-between" padding={0.5}>
             <Box display="flex" flexDirection="column">
-              <Typography variant="h6">{name}</Typography>
+              <Typography variant="h6">{`Game: "${name}"`}</Typography>
               {description && <Typography variant="body1">{description}</Typography>}
               <MySubTitle>Created: {createdAt.toLocaleDateString()}</MySubTitle>
               <MySubTitle>Updated: {updatedAt.toLocaleDateString()}</MySubTitle>
@@ -72,9 +73,8 @@ const GameCard = ({ game, refetch }: Props) => {
               >
                 Edit
               </Button>
-
               <Button
-                onClick={() => onClickQuestions(id)}
+                onClick={onClickQuestions}
                 variant="contained"
                 color="primary"
                 size="small"
@@ -89,6 +89,15 @@ const GameCard = ({ game, refetch }: Props) => {
             </Box>
           </Box>
           <AddQuestionToGame game={game} isVisible={shouldShowAddQuestion} />
+          <Box
+            marginLeft={4}
+            marginRight={1}
+            paddingTop={1}
+            paddingBottom={1}
+            hidden={!shouldShowAddQuestion}
+          >
+            <MyQuestionsList gameId={game.id} shouldShowHeader={false} />
+          </Box>
         </Box>
       </Paper>
     </Box>

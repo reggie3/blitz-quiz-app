@@ -86,7 +86,7 @@ model Question {
   text            String
   gameIds         String[]
   correctAnswerId String?  @default("")
-  wrongAnswerIds  String[]
+  answerIds       String[]
   creatorId       String?
 }
 

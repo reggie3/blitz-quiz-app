@@ -28,6 +28,7 @@ interface Props<ObjectType> {
   ) => void
   onOpen: () => void
   options: ObjectType[]
+  placeholder: string
   textKey: string
   value: ObjectType | null
 }
@@ -43,6 +44,7 @@ const MySearchField = <ObjectType extends object>({
   onInputChange,
   onOpen,
   options,
+  placeholder,
   textKey,
   value,
 }: Props<ObjectType>) => {
@@ -68,7 +70,7 @@ const MySearchField = <ObjectType extends object>({
           <TextField
             data-testid={`${testId}-input`}
             {...params}
-            placeholder="Question"
+            placeholder={placeholder}
             value={inputValue}
             fullWidth
             InputProps={{

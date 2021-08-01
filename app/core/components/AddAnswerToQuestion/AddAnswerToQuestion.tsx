@@ -2,64 +2,66 @@ import { Box } from "@material-ui/core"
 import React, { useCallback, useEffect, useState } from "react"
 import { useDebounce } from "use-debounce"
 import { useMutation, useQuery } from "blitz"
-import getQuestionsBySearchText from "app/questions/queries/getQuestionsBySearchText"
-import { Game, Question } from "db"
-import createQuestion from "app/questions/mutations/createQuestion"
+import getAnswersBySearchText from "app/answers/queries/getAnswersBySearchText"
+import { Game, Answer, Question } from "db"
 import updateGame from "app/games/mutations/updateGame"
-import MySearchField from "../myComponents/MySearchField"
 import { invalidateQuery } from "blitz"
-import getQuestionsByGameId from "app/questions/queries/getQuestionsByGameId"
+import getAnswersByGameId from "app/answers/queries/getAnswersByQuestionId"
 import getGamesByUserId from "app/games/queries/getGamesByUserId"
+import updateQuestion from "app/questions/mutations/updateQuestion"
+import getQuestionsByGameId from "app/questions/queries/getQuestionsByGameId"
+import MySearchField from "../myComponents/MySearchField"
+import createAnswer from "app/answers/mutations/createAnswer"
 
 interface Props {
-  game: Game
+  question: Question
   isVisible: boolean
 }
 
-const AddQuestionToGame = ({ game, isVisible }: Props) => {
+const AddAnswerToQuestion = ({ question, isVisible }: Props) => {
   const [inputValue, setInputValue] = useState<string>("")
   const [searchValue] = useDebounce(inputValue, 1000)
-  const [questions, { refetch, status }] = useQuery(
-    getQuestionsBySearchText,
+  const [answers, { refetch, status }] = useQuery(
+    getAnswersBySearchText,
     { searchValue },
     { enabled: Boolean(searchValue) }
   )
   const [isOpen, setIsOpen] = useState(false)
-  const [value, setValue] = useState<Question | null>(null)
-  const [createQuestionMutation] = useMutation(createQuestion)
-  const [updateGameMutation] = useMutation(updateGame)
+  const [value, setValue] = useState<Answer | null>(null)
+  const [createAnswerMutation] = useMutation(createAnswer)
+  const [updateQuestionMutation] = useMutation(updateQuestion)
 
   const isLoading = status.toLowerCase() === "loading"
 
-  const createNewQuestion = useCallback(async () => {
+  const createNewAnswer = useCallback(async () => {
     if (value) {
       try {
-        const questionRes = await createQuestionMutation({ ...value, gameIds: [game.id] })
+        const answerRes = await createAnswerMutation({ ...value, questionIds: [question.id] })
 
-        const updateGameMutationRes = await updateGameMutation({
-          id: game.id,
-          questionIds: [...game.questionIds, questionRes.id],
+        const updateQuestionMutationRes = await updateQuestionMutation({
+          id: question.id,
+          answerIds: [...question.answerIds, answerRes.id] as string[],
         })
-        invalidateQuery(getGamesByUserId)
         invalidateQuery(getQuestionsByGameId)
+        invalidateQuery(getAnswersByGameId)
         setValue(null)
         setInputValue("")
       } catch (error) {
         console.error(error)
       }
     }
-  }, [createQuestionMutation, game.id, game.questionIds, updateGameMutation, value])
+  }, [createAnswerMutation, question.answerIds, question.id, updateQuestionMutation, value])
 
-  const addQuestionToGame = async () => {}
+  const addAnswerToQuestion = async () => {}
 
   useEffect(() => {
     console.log("value in useEffect", value)
     if (value?.text && !value.id) {
-      createNewQuestion()
+      createNewAnswer()
     } else if (value?.id) {
-      addQuestionToGame()
+      addAnswerToQuestion()
     }
-  }, [createNewQuestion, value])
+  }, [createNewAnswer, value])
 
   if (!isVisible) return null
 
@@ -68,7 +70,7 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
       <Box display="flex" flex="row" alignItems="center">
         <Box flex="1" marginLeft={2}>
           <MySearchField
-            testId="add-question-to-game-search-field"
+            testId="add-answer-to-question-search-field"
             getOptionLabel={(option) => {
               return option?.text ?? ""
             }}
@@ -85,7 +87,7 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
                   text: newValue,
                   createdAt: new Date(),
                   updatedAt: new Date(),
-                } as Question)
+                } as Answer)
               } else {
                 setValue(newValue)
               }
@@ -96,8 +98,8 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
             onOpen={() => {
               setIsOpen(true)
             }}
-            options={questions ?? []}
-            placeholder="Add Question"
+            options={answers ?? []}
+            placeholder="Add Answer"
             textKey="text"
             value={value}
           />
@@ -107,4 +109,4 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
   )
 }
 
-export default AddQuestionToGame
+export default AddAnswerToQuestion

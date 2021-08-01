@@ -4,9 +4,9 @@ import { z } from "zod"
 
 export const UpdateGame = z.object({
   id: z.string(),
-  name: z.string(),
+  name: z.string().optional(),
   description: z.string().optional(),
-  questions: z.string().array().optional(),
+  questionIds: z.string().array().optional(),
 })
 
 export default resolver.pipe(
