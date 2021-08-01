@@ -10,7 +10,7 @@ import { UpdateAnswer } from "app/validations"
 
 export const EditAnswer = () => {
   const [shouldShowSaveSuccess, setShouldShowSaveSuccess] = useState<boolean>(false)
-  const answerId = useParam("answerId", "number")
+  const answerId = useParam("answerId", "string")
   const [answer, { setQueryData }] = useQuery(
     getAnswer,
     { id: answerId },
@@ -21,7 +21,7 @@ export const EditAnswer = () => {
   )
   const [updateAnswerMutation] = useMutation(updateAnswer)
 
-  const onAnswerSaved = (id: number) => {
+  const onAnswerSaved = () => {
     setShouldShowSaveSuccess(true)
   }
 
@@ -60,7 +60,7 @@ export const EditAnswer = () => {
               })
               await setQueryData(updated)
 
-              onAnswerSaved(updated.id)
+              onAnswerSaved()
             } catch (error) {
               console.error(error)
               return {

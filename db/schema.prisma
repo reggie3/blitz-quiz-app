@@ -13,7 +13,7 @@ generator client {
 // --------------------------------------
 
 model User {
-  id             Int      @id @default(autoincrement())
+  id             String   @id @default(cuid())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   name           String?
@@ -21,16 +21,16 @@ model User {
   hashedPassword String?
   role           String   @default("USER")
 
-  tokens   Token[]
-  sessions Session[]
-
-  games     Game[]
-  questions Question[]
-  answers   Answer[]
+  tokens             Token[]
+  sessions           Session[]
+  playedGameIds      String[]
+  createdGameIds     String[]
+  createdQuestionIds String[]
+  createdAnswerIds   String[]
 }
 
 model Session {
-  id                 Int       @id @default(autoincrement())
+  id                 String    @id @default(cuid())
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   expiresAt          DateTime?
@@ -40,12 +40,12 @@ model Session {
   publicData         String?
   privateData        String?
 
-  user   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }
 
 model Token {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   hashedToken String
@@ -55,8 +55,8 @@ model Token {
   expiresAt   DateTime
   sentTo      String
 
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   @@unique([hashedToken, type])
 }
@@ -69,37 +69,34 @@ model Token {
 // }
 
 model Answer {
-  id             Int        @id @default(autoincrement())
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  text           String
-  question       Question[]
-  wrongQuestions Question[] @relation("wrongAnswers")
-  creator        User?      @relation(fields: [userId], references: [id])
-  userId         Int?
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  text             String
+  questionIds      String[]
+  wrongQuestionIds String[]
+  creatorId        String?
 
 }
 
 model Question {
-  id              Int      @id @default(autoincrement())
+  id              String   @id @default(cuid())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   text            String
-  games           Game[]
-  correctAnswer   Answer?  @relation(fields: [correctAnswerId], references: [id])
-  correctAnswerId Int?
-  wrongAnswers    Answer[] @relation("wrongAnswers")
-  creator         User?    @relation(fields: [userId], references: [id])
-  userId          Int?
+  gameIds         String[]
+  correctAnswerId String?  @default("")
+  wrongAnswerIds  String[]
+  creatorId       String?
 }
 
 model Game {
-  id          Int        @id @default(autoincrement())
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   name        String
-  description String     @default("")
-  questions   Question[]
-  creator     User?      @relation(fields: [userId], references: [id])
-  userId      Int?
+  description String?  @default("")
+  questionIds String[]
+  creatorId   String?
+
 }

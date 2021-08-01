@@ -7,13 +7,13 @@ import getUserById from "app/users/queries/getUserById"
 
 export const Game = () => {
   const router = useRouter()
-  const gameId = useParam("gameId", "number")
+  const gameId = useParam("gameId", "string")
   const [deleteGameMutation] = useMutation(deleteGame)
 
   const [game] = useQuery(getGame, { id: gameId })
 
-  console.log("game.userId", game.userId)
-  const [user] = useQuery(getUserById, { userId: game.userId })
+  console.log("game.userId", game.creatorId)
+  const [user] = useQuery(getUserById, { userId: game.creatorId })
 
   console.log("user", user)
   const createdByText = user?.name ?? user?.email ?? "Unknown"

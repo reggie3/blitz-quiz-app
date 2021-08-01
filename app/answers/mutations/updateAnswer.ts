@@ -3,8 +3,10 @@ import db from "db"
 import { z } from "zod"
 
 const UpdateAnswer = z.object({
-  id: z.number(),
+  id: z.string(),
   text: z.string(),
+  questionIds: z.string().array().optional(),
+  wrongQuestionIds: z.string().array().optional(),
 })
 
 export default resolver.pipe(

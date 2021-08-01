@@ -18,18 +18,18 @@ const AnswerCard = ({ answer, refetch }: Props) => {
 
   const { createdAt, text, id, updatedAt } = answer
 
-  const onClickDelete = async (id: number) => {
+  const onClickDelete = async (id: string) => {
     if (window.confirm("This will be deleted")) {
       await deleteAnswerMutation({ id })
       refetch()
     }
   }
 
-  const onClickEdit = (id: number) => {
+  const onClickEdit = (id: string) => {
     router.push(Routes.EditAnswerPage({ answerId: id }))
   }
 
-  const onClickStart = (id: number) => {}
+  const onClickStart = (id: string) => {}
 
   return (
     <Box key={id} mt={1}>

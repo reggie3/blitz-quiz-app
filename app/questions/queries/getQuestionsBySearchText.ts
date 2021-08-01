@@ -14,7 +14,7 @@ export default resolver.pipe(
     const questions = await db.question.findMany({
       where: {
         AND: [
-          { userId: { equals: ctx.session.userId } },
+          { creatorId: { equals: ctx.session.userId } },
           {
             text: {
               contains: searchValue,

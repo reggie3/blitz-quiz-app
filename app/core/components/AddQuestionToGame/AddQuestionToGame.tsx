@@ -38,11 +38,7 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
 
         const updateGameMutationRes = await updateGameMutation({
           id: game.id,
-          data: {
-            questions: {
-              connect: { id: questionRes.id },
-            },
-          },
+          questions: [...game.questions, questionRes.id],
         })
         console.debug("updateGameMutationRes", updateGameMutationRes)
         setValue(null)

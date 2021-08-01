@@ -22,20 +22,20 @@ const GameCard = ({ game, refetch }: Props) => {
   const [deleteGameMutation] = useMutation(deleteGame)
   const [shouldShowAddQuestion, setShouldShowAddQuestion] = useState<boolean>(false)
 
-  const onClickDelete = async (id: number) => {
+  const onClickDelete = async (id: string) => {
     if (window.confirm("This will be deleted")) {
       await deleteGameMutation({ id })
       refetch()
     }
   }
 
-  const onClickEdit = (id: number) => {
+  const onClickEdit = (id: string) => {
     router.push(Routes.EditGamePage({ gameId: id }))
   }
 
-  const onClickStart = (id: number) => {}
+  const onClickStart = (id: string) => {}
 
-  const onClickQuestions = (id: number) => {
+  const onClickQuestions = (id: string) => {
     setShouldShowAddQuestion((prev) => !prev)
   }
 

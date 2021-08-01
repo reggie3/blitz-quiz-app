@@ -18,18 +18,18 @@ const QuestionCard = ({ question, refetch }: Props) => {
 
   const { createdAt, text, id, updatedAt } = question
 
-  const onClickDelete = async (id: number) => {
+  const onClickDelete = async (id: string) => {
     if (window.confirm("This will be deleted")) {
       await deleteQuestionMutation({ id })
       refetch()
     }
   }
 
-  const onClickEdit = (id: number) => {
+  const onClickEdit = (id: string) => {
     router.push(Routes.EditQuestionPage({ questionId: id }))
   }
 
-  const onClickStart = (id: number) => {}
+  const onClickStart = (id: string) => {}
 
   return (
     <Box key={id} mt={1}>

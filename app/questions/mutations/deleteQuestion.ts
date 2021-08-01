@@ -3,7 +3,7 @@ import db from "db"
 import { z } from "zod"
 
 const DeleteQuestion = z.object({
-  id: z.number(),
+  id: z.string(),
 })
 
 export default resolver.pipe(resolver.zod(DeleteQuestion), resolver.authorize(), async ({ id }) => {
