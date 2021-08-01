@@ -4,6 +4,7 @@ import { z } from "zod"
 
 export const CreateQuestion = z.object({
   text: z.string(),
+  games: z.any().optional(),
 })
 
 export default resolver.pipe(

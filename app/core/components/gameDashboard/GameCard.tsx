@@ -88,7 +88,7 @@ const GameCard = ({ game, refetch }: Props) => {
               </IconButton>
             </Box>
           </Box>
-          <AddQuestionToGame isVisible={shouldShowAddQuestion} />
+          <AddQuestionToGame game={game} isVisible={shouldShowAddQuestion} />
         </Box>
       </Paper>
     </Box>

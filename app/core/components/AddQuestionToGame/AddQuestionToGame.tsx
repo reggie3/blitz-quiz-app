@@ -1,19 +1,20 @@
 import { Box, CircularProgress, IconButton, TextField } from "@material-ui/core"
-import React, { KeyboardEvent, useEffect, useState } from "react"
+import React, { KeyboardEvent, useCallback, useEffect, useState } from "react"
 import { useDebounce } from "use-debounce"
 import { useMutation, useQuery } from "blitz"
 import getQuestionsBySearchText from "app/questions/queries/getQuestionsBySearchText"
 import { Autocomplete } from "@material-ui/lab"
-import { Question } from "db"
+import { Game, Question } from "db"
 import createQuestion from "app/questions/mutations/createQuestion"
 import updateGame from "app/games/mutations/updateGame"
 import MySearchField from "../myComponents/MySearchField"
 
 interface Props {
+  game: Game
   isVisible: boolean
 }
 
-const AddQuestionToGame = ({ isVisible }: Props) => {
+const AddQuestionToGame = ({ game, isVisible }: Props) => {
   const [inputValue, setInputValue] = useState<string>("")
   const [searchValue] = useDebounce(inputValue, 1000)
   const [isSearching, setIsSearching] = useState<boolean>(false)
@@ -29,17 +30,39 @@ const AddQuestionToGame = ({ isVisible }: Props) => {
 
   const isLoading = status.toLowerCase() === "loading"
 
-  useEffect(() => {
-    console.log("questions", questions)
-  }, [questions])
+  const createNewQuestion = useCallback(async () => {
+    if (value) {
+      try {
+        const questionRes = await createQuestionMutation({ ...value })
+        console.debug("questionRes", questionRes)
 
-  useEffect(() => {
-    console.log("searchValue in useEffect", searchValue)
-  }, [searchValue])
+        const updateGameMutationRes = await updateGameMutation({
+          id: game.id,
+          data: {
+            questions: {
+              connect: { id: questionRes.id },
+            },
+          },
+        })
+        console.debug("updateGameMutationRes", updateGameMutationRes)
+        setValue(null)
+        setInputValue("")
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }, [createQuestionMutation, game.id, value])
+
+  const addQuestionToGame = async () => {}
 
   useEffect(() => {
     console.log("value in useEffect", value)
-  }, [value])
+    if (value?.text && !value.id) {
+      createNewQuestion()
+    } else if (value?.id) {
+      addQuestionToGame()
+    }
+  }, [createNewQuestion, value])
 
   const onClickSave = () => {
     setInputValue("")
@@ -70,7 +93,6 @@ const AddQuestionToGame = ({ isVisible }: Props) => {
             onChange={(event, newValue) => {
               if (typeof newValue === "string") {
                 setValue({
-                  id: 0,
                   text: newValue,
                   createdAt: new Date(),
                   updatedAt: new Date(),

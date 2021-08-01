@@ -71,7 +71,6 @@ const MySearchField = <ObjectType extends object>({
             placeholder="Question"
             value={inputValue}
             fullWidth
-            // onKeyDown={onKeyDown}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
