@@ -27,6 +27,7 @@ const AnswerCard = ({ answer, questionId, refetch }: Props) => {
     getQuestion,
     { id: questionId },
     {
+      enabled: Boolean(questionId),
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
@@ -47,20 +48,22 @@ const AnswerCard = ({ answer, questionId, refetch }: Props) => {
   }
 
   const onChangeToggle = async (event: MouseEvent, newValue: "correct" | "incorrect") => {
-    const updatedCorrectAnswers =
-      newValue === "correct"
-        ? [...question.correctAnswerIds, answer.id]
-        : question.correctAnswerIds.filter((answerId) => answerId !== answer.id)
+    if (question) {
+      const updatedCorrectAnswers =
+        newValue === "correct"
+          ? [...question.correctAnswerIds, answer.id]
+          : question.correctAnswerIds.filter((answerId) => answerId !== answer.id)
 
-    const updatedQuestion = await updateQuestionMutation({
-      // @ts-ignore id is specified more than once
-      id: question.id,
-      correctAnswerIds: updatedCorrectAnswers,
-    })
-    setQueryData(updatedQuestion)
+      const updatedQuestion = await updateQuestionMutation({
+        // @ts-ignore id is specified more than once
+        id: question.id,
+        correctAnswerIds: updatedCorrectAnswers,
+      })
+      setQueryData(updatedQuestion)
+    }
   }
 
-  const toggleValue = question.correctAnswerIds.includes(answer.id) ? "correct" : "incorrect"
+  const toggleValue = question?.correctAnswerIds.includes(answer.id) ? "correct" : "incorrect"
   console.log("toggleValue", toggleValue)
 
   return (
@@ -81,7 +84,7 @@ const AnswerCard = ({ answer, questionId, refetch }: Props) => {
           <Box display="flex" alignItems="center">
             {Boolean(questionId) && (
               <ToggleButtonGroup
-                value={toggleValue}
+                value={question?.correctAnswerIds.includes(answer.id) ? "correct" : "incorrect"}
                 exclusive
                 onChange={onChangeToggle}
                 aria-label="text formatting"
