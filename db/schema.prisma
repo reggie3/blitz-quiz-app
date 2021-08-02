@@ -80,14 +80,14 @@ model Answer {
 }
 
 model Question {
-  id              String   @id @default(cuid())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  text            String
-  gameIds         String[]
-  correctAnswerId String?  @default("")
-  answerIds       String[]
-  creatorId       String?
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  text             String
+  gameIds          String[]
+  correctAnswerIds String[]
+  answerIds        String[]
+  creatorId        String?
 }
 
 model Game {
