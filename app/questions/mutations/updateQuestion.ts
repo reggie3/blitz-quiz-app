@@ -5,7 +5,7 @@ import { z } from "zod"
 export const UpdateQuestion = z.object({
   id: z.string(),
   text: z.string().optional(),
-  correctAnswerId: z.string().optional(),
+  correctAnswerIds: z.string().array().optional(),
   gameIds: z.string().array().optional(),
   answerIds: z.string().array().optional(),
 })

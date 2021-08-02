@@ -72,7 +72,7 @@ const MyAnswersList = ({ questionId, shouldShowHeader = true }: Props) => {
       {!answers?.length && <p>No answers yet.</p>}
       {Boolean(answers?.length) &&
         answers.map((answer: Answer) => (
-          <AnswerCard key={answer.id} answer={answer} refetch={refetch} />
+          <AnswerCard key={answer.id} answer={answer} refetch={refetch} questionId={questionId} />
         ))}
     </div>
   )
