@@ -10,6 +10,11 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow"
 import HelpIcon from "@material-ui/icons/Help"
 import AddQuestionToGame from "../AddQuestionToGame/AddQuestionToGame"
 import MyQuestionsList from "./MyQuestionsList"
+import { useSocket } from "app/context/socketContext"
+import { useDispatch } from "react-redux"
+import { setGameInfo } from "app/redux/gameSlice"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import { GameInfo } from "myTypes"
 
 interface Props {
   game: Game
@@ -22,6 +27,9 @@ const GameCard = ({ game, refetch }: Props) => {
   const { createdAt, description, id, name, updatedAt } = game
   const [deleteGameMutation] = useMutation(deleteGame)
   const [shouldShowAddQuestion, setShouldShowAddQuestion] = useState<boolean>(false)
+  const { socket } = useSocket()
+  const dispatch = useDispatch()
+  const currentUser = useCurrentUser()
 
   const onClickDelete = async (id: string) => {
     if (window.confirm("This will be deleted")) {
@@ -34,7 +42,14 @@ const GameCard = ({ game, refetch }: Props) => {
     router.push(Routes.EditGamePage({ gameId: id }))
   }
 
-  const onClickStart = (id: string) => {}
+  const onClickStart = (gameId: string) => {
+    if (socket) {
+      socket.connect()
+      socket.emit("launch-game", gameId, currentUser?.id, (message: GameInfo) => {
+        dispatch(setGameInfo(message))
+      })
+    }
+  }
 
   const onClickQuestions = (g) => {
     setShouldShowAddQuestion((prev) => !prev)

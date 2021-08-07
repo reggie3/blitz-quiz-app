@@ -1,0 +1,6 @@
+export enum SocketMessages {
+  CONNECT = "CONNECT",
+  LAUNCH_GAME = "LAUNCH_GAME",
+  JOIN_GAME = "JOIN_GAME",
+  DISCONNECT = "DISCONNECT",
+}

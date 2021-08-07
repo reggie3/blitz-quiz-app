@@ -8,6 +8,7 @@ import { Box } from "@material-ui/core"
 import { GamePlayControls } from "app/core/components/GamePlayControls"
 import { GamesList } from "./games"
 import GameDashboard from "app/core/components/gameDashboard/GameDashboard"
+import { SocketProvider } from "app/context/socketContext"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
@@ -59,15 +60,15 @@ const Home: BlitzPage = () => {
 
   return (
     <div className="container" data-testid="index-page">
-      <Box flex={2} padding={2}>
-        <Suspense fallback="Loading...">
-          <GamePlayControls />
-        </Suspense>
-      </Box>
       <Suspense fallback="Loading...">
-        <GameDashboard />
+        <SocketProvider>
+          <Box flex={2} padding={2}>
+            <GamePlayControls />
+          </Box>
+          <GameDashboard />
+          <ModalContainer />
+        </SocketProvider>
       </Suspense>
-      <ModalContainer />
     </div>
   )
 }
