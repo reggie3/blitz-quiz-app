@@ -4,17 +4,32 @@ import getGames from "app/games/queries/getGames"
 import { GamesList } from "app/pages/games"
 import { RootState } from "app/redux/store"
 import { DashboardViews } from "app/redux/uiSlice"
-import React, { Suspense, useState } from "react"
+import React, { Suspense, useEffect } from "react"
 import { useSelector } from "react-redux"
 import DashboardHeader from "./DashboardHeader"
 import MyAnswersList from "./MyAnswersList"
 import MyGamesList from "./MyGamesList"
 import MyQuestionsList from "./MyQuestionsList"
+import { io } from "socket.io-client"
+
+const socket = io()
+
+// client-side
+socket.on("connect", () => {
+  console.log("connect", socket.id) // x8WIv7-mJelg7on_ALbx
+})
+
+socket.on("disconnect", () => {
+  console.log("disconnect", socket.id) // undefined
+})
 
 const GameDashboard = () => {
   const currentUser = useCurrentUser()
   const { dashboardView } = useSelector((state: RootState) => state.ui)
 
+  // useEffect(() => {
+  //   const socket = io("/game-socket")
+  // }, [])
   if (!currentUser) {
     return null
   }
