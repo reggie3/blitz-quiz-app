@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export enum ModalNames {
+  JOIN_GAME = "JOIN_GAME",
   LOGIN = "LOGIN",
   SIGNUP = "SIGNUP",
 }
@@ -8,11 +9,17 @@ export enum ModalNames {
 export interface ModalData {
   isOpen: boolean
   modalName: ModalNames
+  gameInstanceId?: string
 }
 
 export type ModalState = Record<ModalNames, ModalData>
 
 const initialState: ModalState = {
+  [ModalNames.JOIN_GAME]: {
+    isOpen: false,
+    modalName: ModalNames.JOIN_GAME,
+    gameInstanceId: "",
+  },
   [ModalNames.LOGIN]: {
     isOpen: false,
     modalName: ModalNames.LOGIN,

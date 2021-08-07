@@ -1,7 +1,7 @@
 import { Box, Button, IconButton, makeStyles, Paper, Typography } from "@material-ui/core"
 import { Routes, useMutation, useRouter } from "blitz"
 import { Game } from "db"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import MySubTitle from "../myComponents/MyTopography/MySubTitle"
 import DeleteIcon from "@material-ui/icons/Delete"
 import deleteGame from "app/questions/mutations/deleteQuestion"
@@ -11,10 +11,12 @@ import HelpIcon from "@material-ui/icons/Help"
 import AddQuestionToGame from "../AddQuestionToGame/AddQuestionToGame"
 import MyQuestionsList from "./MyQuestionsList"
 import { useSocket } from "app/context/socketContext"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setGameInfo } from "app/redux/gameSlice"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { GameInfo } from "myTypes"
+import { ModalNames, showModal } from "app/redux/modalSlice"
+import { RootState } from "app/redux/store"
 
 interface Props {
   game: Game
@@ -30,6 +32,7 @@ const GameCard = ({ game, refetch }: Props) => {
   const { socket } = useSocket()
   const dispatch = useDispatch()
   const currentUser = useCurrentUser()
+  const { gameInfo } = useSelector((state: RootState) => state.game)
 
   const onClickDelete = async (id: string) => {
     if (window.confirm("This will be deleted")) {
@@ -54,6 +57,12 @@ const GameCard = ({ game, refetch }: Props) => {
   const onClickQuestions = (g) => {
     setShouldShowAddQuestion((prev) => !prev)
   }
+
+  useEffect(() => {
+    if (gameInfo.gameInstanceId) {
+      dispatch(showModal(ModalNames.JOIN_GAME))
+    }
+  }, [dispatch, gameInfo.gameInstanceId])
 
   return (
     <Box key={id} mt={1}>
