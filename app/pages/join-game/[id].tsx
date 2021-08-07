@@ -1,7 +1,10 @@
 import { Head, BlitzPage } from "blitz"
 import Layout from "app/core/layouts/Layout"
+import { useParams } from "blitz"
 
 const JoinGamePage: BlitzPage = () => {
+  const params = useParams()
+
   return (
     <>
       <Head>
@@ -9,7 +12,7 @@ const JoinGamePage: BlitzPage = () => {
       </Head>
 
       <div>
-        <p>Join Game Page</p>
+        <p>Join Game {JSON.stringify(params)}</p>
       </div>
     </>
   )
