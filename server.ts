@@ -4,6 +4,7 @@ import { parse } from "url"
 import { log } from "@blitzjs/display"
 import { BlitzApiRequest, BlitzApiResponse } from "blitz"
 import * as socketio from "socket.io"
+import { SocketMessages } from "socketTypes"
 
 const { PORT = "3000" } = process.env
 const dev = process.env.NODE_ENV !== "production"
@@ -24,12 +25,14 @@ app.prepare().then(() => {
   const io: socketio.Server = new socketio.Server()
   io.attach(server)
 
-  io.on("connection", (socket: socketio.Socket) => {
+  io.on(SocketMessages.CONNECT, (socket: socketio.Socket) => {
     console.log("connection")
     socket.emit("status", "Hello from Socket.io")
 
-    socket.on("disconnect", () => {
+    socket.on(SocketMessages.DISCONNECT, () => {
       console.log("client disconnected")
     })
   })
+
+  io.on("launch-game", (socket: socketio.Socket, callback) => {})
 })

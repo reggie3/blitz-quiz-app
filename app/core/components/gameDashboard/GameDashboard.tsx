@@ -11,16 +11,17 @@ import MyAnswersList from "./MyAnswersList"
 import MyGamesList from "./MyGamesList"
 import MyQuestionsList from "./MyQuestionsList"
 import { io } from "socket.io-client"
+import { SocketMessages } from "socketTypes"
 
 const socket = io()
 
 // client-side
-socket.on("connect", () => {
-  console.log("connect", socket.id) // x8WIv7-mJelg7on_ALbx
+socket.on(SocketMessages.CONNECT, () => {
+  console.log(SocketMessages.CONNECT, socket.id) // x8WIv7-mJelg7on_ALbx
 })
 
-socket.on("disconnect", () => {
-  console.log("disconnect", socket.id) // undefined
+socket.on(SocketMessages.DISCONNECT, () => {
+  console.log(SocketMessages.DISCONNECT, socket.id) // undefined
 })
 
 const GameDashboard = () => {

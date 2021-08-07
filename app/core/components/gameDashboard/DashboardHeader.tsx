@@ -12,12 +12,7 @@ const DashboardHeader = (props: Props) => {
   const dispatch = useDispatch()
   const { dashboardView } = useSelector((state: RootState) => state.ui)
 
-  const onClick = (view: DashboardViews) => {
-    dispatch(setDashboardView(view))
-  }
-
   const handleChange = (_event, newValue: DashboardViews) => {
-    console.log("newValue", newValue)
     dispatch(setDashboardView(newValue))
   }
 
