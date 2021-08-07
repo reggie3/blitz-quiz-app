@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit"
 import modalReducer from "./modalSlice"
 import debuggingReducer from "./debuggingSlice"
 import uiReducer from "./uiSlice"
+import gameReducer from "./gameSlice"
 
 export const store = configureStore({
   reducer: {
     modals: modalReducer,
     debugging: debuggingReducer,
     ui: uiReducer,
+    game: gameReducer,
   },
 })
 

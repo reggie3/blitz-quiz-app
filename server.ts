@@ -3,8 +3,7 @@ import { createServer } from "http"
 import { parse } from "url"
 import { log } from "@blitzjs/display"
 import { BlitzApiRequest, BlitzApiResponse } from "blitz"
-import * as socketio from "socket.io"
-import { SocketMessages } from "socketTypes"
+import setupWebsocketServer from "app/server/socketServer"
 
 const { PORT = "3000" } = process.env
 const dev = process.env.NODE_ENV !== "production"
@@ -22,17 +21,5 @@ app.prepare().then(() => {
     log.success(`Ready on http://localhost:${PORT}`)
   })
 
-  const io: socketio.Server = new socketio.Server()
-  io.attach(server)
-
-  io.on(SocketMessages.CONNECT, (socket: socketio.Socket) => {
-    console.log("connection")
-    socket.emit("status", "Hello from Socket.io")
-
-    socket.on(SocketMessages.DISCONNECT, () => {
-      console.log("client disconnected")
-    })
-  })
-
-  io.on("launch-game", (socket: socketio.Socket, callback) => {})
+  setupWebsocketServer(server)
 })
