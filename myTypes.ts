@@ -1,5 +1,8 @@
 export interface GamePlayerInfo {
-  playerId
+  playerColor: string
+
+  playerId: string
+  playerName: string
 }
 
 export interface GameInfo {
@@ -7,6 +10,6 @@ export interface GameInfo {
   gameId: string
   startedById: string
   startedAt: number
-  playerIds: Record<string, GamePlayerInfo>
+  gamePlayers: Record<string, GamePlayerInfo>
   joinUrl: string
 }

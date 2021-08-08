@@ -49,10 +49,8 @@ const JoinGameModal = (props: Props) => {
       title="Join New Game"
       description="Click on the link below to join game"
     >
-      <Box display="flex" flexDirection="row">
-        <Link href={joinGameUrl}>
-          <a>{joinGameUrlTitle}</a>
-        </Link>
+      <Box display="flex" flexDirection="row" alignItems="center">
+        <Link href={joinGameUrl}>{joinGameUrlTitle}</Link>
         <Tooltip title="Copy Link">
           <IconButton onClick={onClickCopy}>
             <DescriptionIcon />

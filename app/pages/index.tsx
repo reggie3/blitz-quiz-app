@@ -1,14 +1,10 @@
 import React, { Suspense } from "react"
-import { Link, BlitzPage, useMutation, Routes } from "blitz"
+import { BlitzPage } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import logout from "app/auth/mutations/logout"
 import ModalContainer from "app/core/components/myComponents/ModalContainer"
 import { Box } from "@material-ui/core"
 import { GamePlayControls } from "app/core/components/GamePlayControls"
-import { GamesList } from "./games"
-import GameDashboard from "app/core/components/gameDashboard/GameDashboard"
-import { SocketProvider } from "app/context/socketContext"
+import GameDashboard from "app/core/components/GameDashboard/GameDashboard"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
@@ -61,13 +57,11 @@ const Home: BlitzPage = () => {
   return (
     <div className="container" data-testid="index-page">
       <Suspense fallback="Loading...">
-        <SocketProvider>
-          <Box flex={2} padding={2}>
-            <GamePlayControls />
-          </Box>
-          <GameDashboard />
-          <ModalContainer />
-        </SocketProvider>
+        <Box flex={2} padding={2}>
+          <GamePlayControls />
+        </Box>
+        <GameDashboard />
+        <ModalContainer />
       </Suspense>
     </div>
   )

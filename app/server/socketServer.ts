@@ -1,35 +1,7 @@
 import * as socketio from "socket.io"
 import { Server } from "http"
-import { SocketMessages } from "socketTypes"
-import { GameInfo } from "myTypes"
-import cuid from "cuid"
-import { log } from "@blitzjs/display"
-
-import { BlitzApiRequest } from "blitz"
-
-const gameInfo: Record<string, GameInfo> = {}
-
-const createGame = ({
-  gameId,
-  startedById,
-}: {
-  gameId: string
-  startedById: string
-}): Partial<GameInfo> => {
-  const gameInstanceId = cuid()
-
-  // const joinUrl = url.format({
-  //   protocol: req.protocol,
-  //   host: req.get("host"),
-  //   pathname: req.originalUrl,
-  // })
-
-  return {
-    gameInstanceId: cuid(),
-    startedById: startedById,
-    gameId,
-  }
-}
+import { GameInfo, GamePlayerInfo } from "myTypes"
+import { gamesInfo, addUserToGame, createGame } from "./gameUtilities"
 
 const setupWebsocketServer = (server: Server) => {
   const io: socketio.Server = new socketio.Server()
@@ -49,7 +21,27 @@ const setupWebsocketServer = (server: Server) => {
 
     socket.on("launch-game", (gameId: string, startedById: string, callback) => {
       const gameInfo: Partial<GameInfo> = createGame({ gameId, startedById })
+
       callback(gameInfo)
+    })
+
+    socket.on("join-game", (gameInstanceId: string, callback) => {
+      // join the room for this game instance
+      socket.join(gameInstanceId)
+
+      callback(gamesInfo[gameInstanceId])
+
+      io.to(gameInstanceId).emit("update-players", gamesInfo[gameInstanceId])
+    })
+    socket.on("add-name", (gameInstanceId: string, playerName: string, callback) => {
+      const playerInfo: Partial<GamePlayerInfo> = addUserToGame({
+        gameInstanceId,
+        playerName,
+        socketId: socket.id,
+      })
+      callback(gamesInfo[gameInstanceId])
+
+      io.to(gameInstanceId).emit("update-players", gamesInfo[gameInstanceId])
     })
   })
 }
