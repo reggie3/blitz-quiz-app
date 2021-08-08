@@ -9,6 +9,8 @@ import {
   NumberDictionary,
 } from "unique-names-generator"
 
+const GAME_WAIT_TIME = 60000
+
 export const gamesInfo: Record<string, GameInfo> = {}
 
 const getGameInstanceId = (): string => {
@@ -33,6 +35,7 @@ export const createGame = ({
     gameInstanceId,
     startedById: startedById,
     gameId,
+    startTimeMillis: Date.now() + GAME_WAIT_TIME,
   } as GameInfo
 
   gamesInfo[gameInstanceId] = gameInfo

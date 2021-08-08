@@ -33,6 +33,7 @@
     "@reduxjs/toolkit": "1.6.1",
     "blitz": "0.38.6",
     "cuid": "2.1.8",
+    "date-fns": "2.23.0",
     "final-form": "4.20.2",
     "framer-motion": "4.1.17",
     "lodash": "4.17.21",
