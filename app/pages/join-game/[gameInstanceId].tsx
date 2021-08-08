@@ -14,7 +14,6 @@ const JoinGamePage: BlitzPage = () => {
         <title>Join Game</title>
       </Head>
       <div>
-        <p>Join Game {gameInstanceId}</p>
         <Suspense fallback={<div>Loading...</div>}>
           <SocketProvider>
             <GameLobby gameInstanceToJoin={gameInstanceId} />
