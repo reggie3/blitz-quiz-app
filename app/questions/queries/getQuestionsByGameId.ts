@@ -7,6 +7,8 @@ interface GetQuestionsByGameIdInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetQuestionsByGameIdInput) => {
+    console.log("where", where)
+    console.log("orderBy", orderBy)
     const {
       items: questions,
       hasMore,

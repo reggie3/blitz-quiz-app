@@ -10,6 +10,7 @@ import MySearchField from "../myComponents/MySearchField"
 import { invalidateQuery } from "blitz"
 import getQuestionsByGameId from "app/questions/queries/getQuestionsByGameId"
 import getGamesByUserId from "app/games/queries/getGamesByUserId"
+import getQuestion from "app/questions/queries/getQuestion"
 
 interface Props {
   game: Game
@@ -31,14 +32,12 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
 
   const isLoading = status.toLowerCase() === "loading"
 
-  const createNewQuestion = useCallback(async () => {
-    if (value) {
+  const addQuestionToGame = useCallback(
+    async (question: Question) => {
       try {
-        const questionRes = await createQuestionMutation({ ...value, gameIds: [game.id] })
-
         const updateGameMutationRes = await updateGameMutation({
           id: game.id,
-          questionIds: [...game.questionIds, questionRes.id],
+          questionIds: [...game.questionIds, question.id],
         })
         invalidateQuery(getGamesByUserId)
         invalidateQuery(getQuestionsByGameId)
@@ -47,19 +46,31 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
       } catch (error) {
         console.error(error)
       }
-    }
-  }, [createQuestionMutation, game.id, game.questionIds, updateGameMutation, value])
+    },
+    [game.id, game.questionIds, updateGameMutation]
+  )
 
-  const addQuestionToGame = async () => {}
+  const createNewQuestion = useCallback(async () => {
+    if (value) {
+      try {
+        const questionRes = await createQuestionMutation({ ...value, gameIds: [game.id] })
+
+        addQuestionToGame(questionRes)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }, [addQuestionToGame, createQuestionMutation, game.id, value])
 
   useEffect(() => {
     console.log("value in useEffect", value)
     if (value?.text && !value.id) {
       createNewQuestion()
-    } else if (value?.id) {
-      addQuestionToGame()
+    } else if (value?.id && questions) {
+      const selectedQuestion = questions.find((question) => question.id === value?.id)
+      selectedQuestion && addQuestionToGame(selectedQuestion)
     }
-  }, [createNewQuestion, value])
+  }, [addQuestionToGame, createNewQuestion, questions, value])
 
   if (!isVisible) return null
 

@@ -27,7 +27,6 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
   useEffect(() => {
     if (!isInitialized && socket && gameInstanceToJoin) {
       socket.emit("join-game", gameInstanceToJoin, (message: GameInfo) => {
-        debugger
         dispatch(setGameInfo(message))
       })
       setIsInitialized(true)

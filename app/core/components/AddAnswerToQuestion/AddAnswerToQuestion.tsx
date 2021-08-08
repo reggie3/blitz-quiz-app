@@ -12,6 +12,8 @@ import updateQuestion from "app/questions/mutations/updateQuestion"
 import getQuestionsByGameId from "app/questions/queries/getQuestionsByGameId"
 import MySearchField from "../myComponents/MySearchField"
 import createAnswer from "app/answers/mutations/createAnswer"
+import getQuestions from "app/questions/queries/getQuestions"
+import getQuestionsByUserId from "app/questions/queries/getQuestionsByUserId"
 
 interface Props {
   question: Question
@@ -33,35 +35,45 @@ const AddAnswerToQuestion = ({ question, isVisible }: Props) => {
 
   const isLoading = status.toLowerCase() === "loading"
 
-  const createNewAnswer = useCallback(async () => {
-    if (value) {
+  const addAnswerToQuestion = useCallback(
+    async (answer: Answer) => {
       try {
-        const answerRes = await createAnswerMutation({ ...value, questionIds: [question.id] })
-
         const updateQuestionMutationRes = await updateQuestionMutation({
           id: question.id,
-          answerIds: [...question.answerIds, answerRes.id] as string[],
+          answerIds: [...question.answerIds, answer.id] as string[],
         })
-        invalidateQuery(getQuestionsByGameId)
+        invalidateQuery(getQuestionsByUserId)
         invalidateQuery(getAnswersByGameId)
         setValue(null)
         setInputValue("")
       } catch (error) {
         console.error(error)
       }
-    }
-  }, [createAnswerMutation, question.answerIds, question.id, updateQuestionMutation, value])
+    },
+    [question.answerIds, question.id, updateQuestionMutation]
+  )
 
-  const addAnswerToQuestion = async () => {}
+  const createNewAnswer = useCallback(async () => {
+    if (value) {
+      try {
+        const answerRes = await createAnswerMutation({ ...value, questionIds: [question.id] })
+
+        addAnswerToQuestion(answerRes)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }, [addAnswerToQuestion, createAnswerMutation, question.id, value])
 
   useEffect(() => {
     console.log("value in useEffect", value)
     if (value?.text && !value.id) {
       createNewAnswer()
-    } else if (value?.id) {
-      addAnswerToQuestion()
+    } else if (value?.id && answers) {
+      const selectedAnswer = answers.find((answer) => answer.id === value?.id)
+      selectedAnswer && addAnswerToQuestion(selectedAnswer)
     }
-  }, [createNewAnswer, value])
+  }, [addAnswerToQuestion, answers, createNewAnswer, value])
 
   if (!isVisible) return null
 
