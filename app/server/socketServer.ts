@@ -1,7 +1,7 @@
 import * as socketio from "socket.io"
 import { Server } from "http"
 import { GameInfo, GamePlayerInfo } from "myTypes"
-import { gamesInfo, addUserToGame, createGame } from "./gameUtilities"
+import { gamesInfo, addUserToGame, createGame } from "./gameServerUtilities"
 
 const setupWebsocketServer = (server: Server) => {
   const io: socketio.Server = new socketio.Server()
