@@ -1,5 +1,8 @@
+import { setGameInfo } from "app/redux/gameSlice"
 import { useSession } from "blitz"
+import { GameInfo } from "myTypes"
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
 import { Socket } from "socket.io-client"
 import { io } from "socket.io-client"
 import { SocketMessages } from "socketTypes"
@@ -11,6 +14,7 @@ const SocketContext = React.createContext<
 const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null)
   const session = useSession()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (!socket) {
@@ -34,8 +38,13 @@ const SocketProvider = ({ children }) => {
       socket.on("disconnect", () => {
         console.log("disconnect", socket.id) // undefined
       })
+
+      socket.on("update-players", (gameInfo: GameInfo) => {
+        console.log("update-players", gameInfo)
+        dispatch(setGameInfo(gameInfo))
+      })
     }
-  }, [socket])
+  }, [dispatch, socket])
 
   return <SocketContext.Provider value={{ socket, setSocket }}>{children}</SocketContext.Provider>
 }

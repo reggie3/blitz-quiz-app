@@ -1,6 +1,5 @@
-import { IconButton, makeStyles, Modal } from "@material-ui/core"
+import { makeStyles, Modal, Paper } from "@material-ui/core"
 import React, { ReactElement } from "react"
-import CloseIcon from "@material-ui/icons/Close"
 import { MyCloseIconButton } from "../MyCloseIconButton"
 import BackdropComponent from "./BackdropComponent"
 
@@ -31,12 +30,12 @@ export const MyModal = ({
       className={modalRoot}
       BackdropComponent={BackdropComponent}
     >
-      <div className={paper}>
+      <Paper className={paper} elevation={5}>
         {shouldShowExitButton && <MyCloseIconButton onClick={onClickClose} />}
         {title && <h2 id="simple-modal-title">{title}</h2>}
         {description && <p id="simple-modal-description">{description}</p>}
         {children}
-      </div>
+      </Paper>
     </Modal>
   )
 }
@@ -45,10 +44,7 @@ const useStyles = makeStyles((theme) => ({
   modalRoot: { display: "flex", justifyContent: "center", alignItems: "center" },
   paper: {
     position: "absolute",
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
+    minWidth: 400,
     padding: theme.spacing(2, 4, 3),
   },
 }))

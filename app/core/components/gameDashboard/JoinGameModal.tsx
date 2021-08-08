@@ -1,12 +1,12 @@
-import { Box, Typography } from "@material-ui/core"
-import SignupForm from "app/auth/components/SignupForm"
+import { Box, IconButton, Tooltip } from "@material-ui/core"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { ModalNames, closeModal } from "app/redux/modalSlice"
 import { RootState } from "app/redux/store"
-import { Link, Routes } from "blitz"
+import { Link } from "blitz"
 import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { MyModal } from "../myComponents/MyModal/MyModal"
+import DescriptionIcon from "@material-ui/icons/Description"
 
 interface Props {}
 
@@ -38,6 +38,10 @@ const JoinGameModal = (props: Props) => {
     setJoinGameUrlTitle(window.location.href + "join-game/" + gameInstanceId)
   }, [gameInstanceId, joinGameUrl])
 
+  const onClickCopy = () => {
+    navigator.clipboard.writeText(joinGameUrlTitle)
+  }
+
   return (
     <MyModal
       isOpen={isOpen}
@@ -45,10 +49,13 @@ const JoinGameModal = (props: Props) => {
       title="Join New Game"
       description="Click on the link below to join game"
     >
-      <Box>
-        <Link href={joinGameUrl}>
-          <a>{joinGameUrlTitle}</a>
-        </Link>
+      <Box display="flex" flexDirection="row" alignItems="center">
+        <Link href={joinGameUrl}>{joinGameUrlTitle}</Link>
+        <Tooltip title="Copy Link">
+          <IconButton onClick={onClickCopy}>
+            <DescriptionIcon />
+          </IconButton>
+        </Tooltip>
       </Box>
     </MyModal>
   )

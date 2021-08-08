@@ -1,7 +1,7 @@
 import React, { Suspense } from "react"
 import { LoginModal } from "../Auth/LoginModal"
 import SignupModal from "../Auth/SignupModal"
-import JoinGameModal from "../gameDashboard/JoinGameModal"
+import JoinGameModal from "../GameDashboard/JoinGameModal"
 
 interface Props {}
 
