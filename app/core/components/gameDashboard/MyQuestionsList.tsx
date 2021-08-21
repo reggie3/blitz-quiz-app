@@ -24,7 +24,6 @@ const getQuery = (gameId?: string) => {
 
 const getQueryInfo = (page: number, gameId?: string) => {
   const baseQuery = {
-    orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   }
