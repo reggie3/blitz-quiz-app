@@ -4,9 +4,10 @@ import { differenceInSeconds, differenceInMinutes } from "date-fns"
 
 interface Props {
   endTimeMillis: number
+  onComplete?: () => void
 }
 
-const CountdownTimer = ({ endTimeMillis }: Props) => {
+const CountdownTimer = ({ endTimeMillis, onComplete }: Props) => {
   const [minutes, setMinutes] = useState<number | null>(null)
   const [seconds, setSeconds] = useState<number | null>(null)
 
@@ -23,6 +24,11 @@ const CountdownTimer = ({ endTimeMillis }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (seconds === 0 && minutes === 0) {
+      onComplete && onComplete()
+    }
+  }, [seconds, minutes, onComplete])
   return (
     <Paper>
       <Box

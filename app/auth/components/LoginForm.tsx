@@ -32,7 +32,6 @@ export const LoginForm = (props: LoginFormProps) => {
             await loginMutation(values)
             props.onSuccess?.()
           } catch (error) {
-            debugger
             if (error instanceof AuthenticationError) {
               return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
             } else {
