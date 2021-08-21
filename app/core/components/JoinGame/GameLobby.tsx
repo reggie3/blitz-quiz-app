@@ -11,11 +11,15 @@ import JoinGameCard from "../JoinGameCard/JoinGameCard"
 import { RootState } from "app/redux/store"
 import HasJoinedGameCard from "./HasJoinedGameCard/HasJoinedGameCard"
 import CountdownTimer from "app/core/components/CountdownTimer/CountdownTimer"
+import { useRouter } from "blitz"
+
 interface Props {
   gameInstanceToJoin: string | string[] | undefined
 }
 
 const GameLobby = ({ gameInstanceToJoin }: Props) => {
+  const router = useRouter()
+
   const { socket } = useSocket()
   const theme = useTheme()
   const dispatch = useDispatch()
@@ -60,6 +64,11 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
     )
   }
 
+  const onCountdownComplete = () => {
+    console.log("onCountdownComplete ***")
+    router.push(`/play-game/${gameInstanceToJoin}`)
+  }
+
   return (
     <Box
       display="flex"
@@ -69,7 +78,7 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
     >
       {startTimeMillis && (
         <Box my={2}>
-          <CountdownTimer endTimeMillis={startTimeMillis} />
+          <CountdownTimer endTimeMillis={startTimeMillis} onComplete={onCountdownComplete} />
         </Box>
       )}
       <Box py={1}>
