@@ -7,7 +7,6 @@ interface GetQuestionsByGameIdInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, skip = 0, take = 100 }: GetQuestionsByGameIdInput) => {
-    console.log("here ***************")
     const {
       items: questions,
       hasMore,
@@ -19,8 +18,6 @@ export default resolver.pipe(
       count: () => db.question.count({ where }),
       query: (paginateArgs) => db.question.findMany({ ...paginateArgs, where, orderBy }),
     })
-
-    console.log("questions", questions)
 
     return {
       questions,
