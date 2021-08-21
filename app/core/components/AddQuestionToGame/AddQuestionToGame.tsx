@@ -11,6 +11,7 @@ import MySearchField from "../myComponents/MySearchField"
 import { invalidateQuery } from "blitz"
 import getQuestionsByGameId from "app/questions/queries/getQuestionsByGameId"
 import getGamesByUserId from "app/games/queries/getGamesByUserId"
+import getQuestion from "app/questions/queries/getQuestion"
 
 interface Props {
   game: Game

@@ -10,6 +10,7 @@ import CopyLinkCard from "../CopyLinkCard/CopyLinkCard"
 import JoinGameCard from "../JoinGameCard/JoinGameCard"
 import { RootState } from "app/redux/store"
 import HasJoinedGameCard from "./HasJoinedGameCard/HasJoinedGameCard"
+import { CountdownTimer } from "../CountdownTimer/CountdownTimer"
 
 interface Props {
   gameInstanceToJoin: string | string[] | undefined
@@ -21,7 +22,7 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
   const dispatch = useDispatch()
   const [isInitialized, setIsInitialized] = useState(false)
   const [hasJoinedGame, setHasJoinedGame] = useState(false)
-  const { gamePlayers } = useSelector((state: RootState) => state.game.gameInfo)
+  const { gamePlayers, startTimeMillis } = useSelector((state: RootState) => state.game.gameInfo)
 
   useEffect(() => {
     if (!isInitialized && socket && gameInstanceToJoin) {
@@ -38,6 +39,8 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
     }
   }, [gamePlayers, socket])
 
+  console.log("startTimeMillis", startTimeMillis)
+
   return (
     <Box
       display="flex"
@@ -45,6 +48,11 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
       alignItems="center"
       style={{ marginLeft: theme.spacing(4), marginRight: theme.spacing(4) }}
     >
+      {startTimeMillis && (
+        <Box my={2}>
+          <CountdownTimer endTimeMillis={startTimeMillis} />
+        </Box>
+      )}
       <Box py={1}>
         <CopyLinkCard url={window.location.href} />
       </Box>

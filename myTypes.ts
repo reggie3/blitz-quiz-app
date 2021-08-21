@@ -11,5 +11,5 @@ export interface GameInfo {
   startedById: string
   startedAt: number
   gamePlayers: Record<string, GamePlayerInfo>
-  joinUrl: string
+  startTimeMillis: number
 }

@@ -27,21 +27,25 @@ const getQueryInfo = (page: number, gameId?: string) => {
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   }
-  if (Boolean(gameId)) {
-    return { ...baseQuery, where: { gameIds: { has: gameId } } }
-  }
+  // if (Boolean(gameId)) {
+  //   return { ...baseQuery, where: { gameIds: { has: gameId } } }
+  // }
   return baseQuery
 }
 
 const MyQuestionsList = ({ gameId, shouldShowHeader = true }: Props) => {
+  console.log("MyQuestionsList gameId", gameId)
   const router = useRouter()
 
   const [page, setPage] = useState<number>(0)
-  const [{ questions, hasMore }, { refetch }] = usePaginatedQuery(
-    getQuery(gameId),
-    getQueryInfo(page, gameId)
-  )
+  const [{ questions, hasMore }, { refetch }] = usePaginatedQuery(getQuery(gameId), {
+    orderBy: { id: "asc" },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+    where: { gameIds: { has: gameId } },
+  })
 
+  console.log("MyQuestionsList questions", questions)
   const goToPreviousPage = () => {
     //  router.push({ query: { page: page - 1 } })
   }

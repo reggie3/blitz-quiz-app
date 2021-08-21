@@ -39,8 +39,6 @@ const QuestionCard = ({ question, refetch }: Props) => {
     setShouldShowAddAnswer((prev) => !prev)
   }
 
-  const onChangeCorrectAnswer = () => {}
-
   return (
     <Box key={id} mt={1}>
       <Paper>
