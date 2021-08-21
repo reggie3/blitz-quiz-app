@@ -6,6 +6,7 @@ import getQuestionsBySearchText from "app/questions/queries/getQuestionsBySearch
 import { Game, Question } from "db"
 import createQuestion from "app/questions/mutations/createQuestion"
 import updateGame from "app/games/mutations/updateGame"
+import updateQuestion from "app/questions/mutations/updateQuestion"
 import MySearchField from "../myComponents/MySearchField"
 import { invalidateQuery } from "blitz"
 import getQuestionsByGameId from "app/questions/queries/getQuestionsByGameId"
@@ -26,51 +27,59 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
     { enabled: Boolean(searchValue) }
   )
   const [isOpen, setIsOpen] = useState(false)
-  const [value, setValue] = useState<Question | null>(null)
+  const [question, setQuestion] = useState<Question | null>(null)
   const [createQuestionMutation] = useMutation(createQuestion)
   const [updateGameMutation] = useMutation(updateGame)
+  const [updateQuestionMutation] = useMutation(updateQuestion)
 
   const isLoading = status.toLowerCase() === "loading"
 
+  const addGameToQuestion = useCallback(
+    async (question: Question, gameId: string) => {
+      const updateQuestionMutationRes = await updateQuestionMutation({
+        id: question.id,
+        gameIds: [...question.gameIds, gameId],
+      })
+      invalidateQuery(getQuestionsByGameId)
+    },
+    [updateQuestionMutation]
+  )
+
   const addQuestionToGame = useCallback(
-    async (question: Question) => {
+    async (questionId: string) => {
+      const updateGameMutationRes = await updateGameMutation({
+        id: game.id,
+        questionIds: [...game.questionIds, questionId],
+      })
+      question && addGameToQuestion(question, game.id)
+      invalidateQuery(getGamesByUserId)
+      invalidateQuery(getQuestionsByGameId)
+    },
+    [addGameToQuestion, game.id, game.questionIds, question, updateGameMutation]
+  )
+
+  const createNewQuestion = useCallback(async () => {
+    if (question) {
       try {
-        const updateGameMutationRes = await updateGameMutation({
-          id: game.id,
-          questionIds: [...game.questionIds, question.id],
-        })
-        invalidateQuery(getGamesByUserId)
-        invalidateQuery(getQuestionsByGameId)
-        setValue(null)
+        const questionRes = await createQuestionMutation({ ...question, gameIds: [game.id] })
+        addQuestionToGame(questionRes.id)
+        setQuestion(null)
         setInputValue("")
       } catch (error) {
         console.error(error)
       }
-    },
-    [game.id, game.questionIds, updateGameMutation]
-  )
-
-  const createNewQuestion = useCallback(async () => {
-    if (value) {
-      try {
-        const questionRes = await createQuestionMutation({ ...value, gameIds: [game.id] })
-
-        addQuestionToGame(questionRes)
-      } catch (error) {
-        console.error(error)
-      }
     }
-  }, [addQuestionToGame, createQuestionMutation, game.id, value])
+  }, [addQuestionToGame, createQuestionMutation, game.id, question])
 
   useEffect(() => {
-    console.log("value in useEffect", value)
-    if (value?.text && !value.id) {
+    console.log("value in useEffect", question)
+    if (question?.text && !question.id) {
       createNewQuestion()
-    } else if (value?.id && questions) {
-      const selectedQuestion = questions.find((question) => question.id === value?.id)
-      selectedQuestion && addQuestionToGame(selectedQuestion)
+    } else if (question?.id) {
+      addQuestionToGame(question.id)
     }
-  }, [addQuestionToGame, createNewQuestion, questions, value])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [question])
 
   if (!isVisible) return null
 
@@ -92,13 +101,13 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
             }}
             onChange={(event, newValue) => {
               if (typeof newValue === "string") {
-                setValue({
+                setQuestion({
                   text: newValue,
                   createdAt: new Date(),
                   updatedAt: new Date(),
                 } as Question)
               } else {
-                setValue(newValue)
+                setQuestion(newValue)
               }
             }}
             onInputChange={(event, newInputValue) => {
@@ -110,7 +119,7 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
             options={questions ?? []}
             placeholder="Add Question"
             textKey="text"
-            value={value}
+            value={question}
           />
         </Box>
       </Box>

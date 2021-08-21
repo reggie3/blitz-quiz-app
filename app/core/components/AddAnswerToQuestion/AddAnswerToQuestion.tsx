@@ -3,17 +3,14 @@ import React, { useCallback, useEffect, useState } from "react"
 import { useDebounce } from "use-debounce"
 import { useMutation, useQuery } from "blitz"
 import getAnswersBySearchText from "app/answers/queries/getAnswersBySearchText"
-import { Game, Answer, Question } from "db"
-import updateGame from "app/games/mutations/updateGame"
+import { Answer, Question } from "db"
 import { invalidateQuery } from "blitz"
 import getAnswersByGameId from "app/answers/queries/getAnswersByQuestionId"
-import getGamesByUserId from "app/games/queries/getGamesByUserId"
 import updateQuestion from "app/questions/mutations/updateQuestion"
 import getQuestionsByGameId from "app/questions/queries/getQuestionsByGameId"
 import MySearchField from "../myComponents/MySearchField"
 import createAnswer from "app/answers/mutations/createAnswer"
-import getQuestions from "app/questions/queries/getQuestions"
-import getQuestionsByUserId from "app/questions/queries/getQuestionsByUserId"
+import updateAnswer from "app/answers/mutations/updateAnswer"
 
 interface Props {
   question: Question
@@ -29,51 +26,59 @@ const AddAnswerToQuestion = ({ question, isVisible }: Props) => {
     { enabled: Boolean(searchValue) }
   )
   const [isOpen, setIsOpen] = useState(false)
-  const [value, setValue] = useState<Answer | null>(null)
+  const [answer, setAnswer] = useState<Answer | null>(null)
   const [createAnswerMutation] = useMutation(createAnswer)
   const [updateQuestionMutation] = useMutation(updateQuestion)
+  const [updateAnswerMutation] = useMutation(updateAnswer)
 
   const isLoading = status.toLowerCase() === "loading"
 
+  const addQuestionToAnswer = useCallback(
+    async (answer: Answer, questionId: string) => {
+      const updateAnswerMutationRes = await updateAnswerMutation({
+        id: answer.id,
+        questionIds: [...answer.questionIds, questionId],
+      })
+      invalidateQuery(getAnswersByGameId)
+    },
+    [updateAnswerMutation]
+  )
+
   const addAnswerToQuestion = useCallback(
-    async (answer: Answer) => {
+    async (answerId: string) => {
+      const updateQuestionMutationRes = await updateQuestionMutation({
+        id: question.id,
+        answerIds: [...question.answerIds, answerId] as string[],
+      })
+      answer && addQuestionToAnswer(answer, question.id)
+      invalidateQuery(getQuestionsByGameId)
+      invalidateQuery(getAnswersByGameId)
+    },
+    [addQuestionToAnswer, answer, question.answerIds, question.id, updateQuestionMutation]
+  )
+
+  const createNewAnswer = useCallback(async () => {
+    if (answer) {
       try {
-        const updateQuestionMutationRes = await updateQuestionMutation({
-          id: question.id,
-          answerIds: [...question.answerIds, answer.id] as string[],
-        })
-        invalidateQuery(getQuestionsByUserId)
-        invalidateQuery(getAnswersByGameId)
-        setValue(null)
+        const answerRes = await createAnswerMutation({ ...answer, questionIds: [question.id] })
+        addAnswerToQuestion(answerRes.id)
+        setAnswer(null)
         setInputValue("")
       } catch (error) {
         console.error(error)
       }
-    },
-    [question.answerIds, question.id, updateQuestionMutation]
-  )
-
-  const createNewAnswer = useCallback(async () => {
-    if (value) {
-      try {
-        const answerRes = await createAnswerMutation({ ...value, questionIds: [question.id] })
-
-        addAnswerToQuestion(answerRes)
-      } catch (error) {
-        console.error(error)
-      }
     }
-  }, [addAnswerToQuestion, createAnswerMutation, question.id, value])
+  }, [addAnswerToQuestion, createAnswerMutation, question.id, answer])
 
   useEffect(() => {
-    console.log("value in useEffect", value)
-    if (value?.text && !value.id) {
+    console.log("answer in useEffect", answer)
+    if (answer?.text && !answer.id) {
       createNewAnswer()
-    } else if (value?.id && answers) {
-      const selectedAnswer = answers.find((answer) => answer.id === value?.id)
-      selectedAnswer && addAnswerToQuestion(selectedAnswer)
+    } else if (answer?.id) {
+      addAnswerToQuestion(answer.id)
     }
-  }, [addAnswerToQuestion, answers, createNewAnswer, value])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answer])
 
   if (!isVisible) return null
 
@@ -95,13 +100,13 @@ const AddAnswerToQuestion = ({ question, isVisible }: Props) => {
             }}
             onChange={(event, newValue) => {
               if (typeof newValue === "string") {
-                setValue({
+                setAnswer({
                   text: newValue,
                   createdAt: new Date(),
                   updatedAt: new Date(),
                 } as Answer)
               } else {
-                setValue(newValue)
+                setAnswer(newValue)
               }
             }}
             onInputChange={(event, newInputValue) => {
@@ -113,7 +118,7 @@ const AddAnswerToQuestion = ({ question, isVisible }: Props) => {
             options={answers ?? []}
             placeholder="Add Answer"
             textKey="text"
-            value={value}
+            value={answer}
           />
         </Box>
       </Box>

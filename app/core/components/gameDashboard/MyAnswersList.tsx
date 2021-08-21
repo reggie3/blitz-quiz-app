@@ -27,7 +27,6 @@ const getQuery = (questionId?: string) => {
 
 const getQueryInfo = (page: number, questionId?: string) => {
   const baseQuery = {
-    orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   }
