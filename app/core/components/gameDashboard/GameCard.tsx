@@ -49,6 +49,7 @@ const GameCard = ({ game, refetch }: Props) => {
     if (socket) {
       socket.connect()
       socket.emit("launch-game", gameId, currentUser?.id, (message: GameInfo) => {
+        debugger
         dispatch(setGameInfo(message))
       })
     }

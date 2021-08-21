@@ -10,8 +10,7 @@ import CopyLinkCard from "../CopyLinkCard/CopyLinkCard"
 import JoinGameCard from "../JoinGameCard/JoinGameCard"
 import { RootState } from "app/redux/store"
 import HasJoinedGameCard from "./HasJoinedGameCard/HasJoinedGameCard"
-import { CountdownTimer } from "../CountdownTimer/CountdownTimer"
-
+import CountdownTimer from "app/core/components/CountdownTimer/CountdownTimer"
 interface Props {
   gameInstanceToJoin: string | string[] | undefined
 }
@@ -22,12 +21,17 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
   const dispatch = useDispatch()
   const [isInitialized, setIsInitialized] = useState(false)
   const [hasJoinedGame, setHasJoinedGame] = useState(false)
+  const [hasJoinGameError, setHasJoinGameError] = useState(false)
   const { gamePlayers, startTimeMillis } = useSelector((state: RootState) => state.game.gameInfo)
 
   useEffect(() => {
     if (!isInitialized && socket && gameInstanceToJoin) {
       socket.emit("join-game", gameInstanceToJoin, (message: GameInfo) => {
-        dispatch(setGameInfo(message))
+        if (!message) {
+          setHasJoinGameError(true)
+        } else {
+          dispatch(setGameInfo(message))
+        }
       })
       setIsInitialized(true)
     }
@@ -40,6 +44,21 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
   }, [gamePlayers, socket])
 
   console.log("startTimeMillis", startTimeMillis)
+
+  if (hasJoinGameError) {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        style={{ marginLeft: theme.spacing(4), marginRight: theme.spacing(4) }}
+      >
+        <Typography variant="h6" color="textSecondary">
+          Error joining game
+        </Typography>
+      </Box>
+    )
+  }
 
   return (
     <Box

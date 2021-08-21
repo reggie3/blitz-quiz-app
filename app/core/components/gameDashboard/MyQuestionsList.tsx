@@ -34,7 +34,6 @@ const getQueryInfo = (page: number, gameId?: string) => {
 }
 
 const MyQuestionsList = ({ gameId, shouldShowHeader = true }: Props) => {
-  console.log("MyQuestionsList gameId", gameId)
   const router = useRouter()
 
   const [page, setPage] = useState<number>(0)
@@ -45,7 +44,6 @@ const MyQuestionsList = ({ gameId, shouldShowHeader = true }: Props) => {
     where: { gameIds: { has: gameId } },
   })
 
-  console.log("MyQuestionsList questions", questions)
   const goToPreviousPage = () => {
     //  router.push({ query: { page: page - 1 } })
   }

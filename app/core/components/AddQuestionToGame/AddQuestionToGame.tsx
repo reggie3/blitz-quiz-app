@@ -72,7 +72,6 @@ const AddQuestionToGame = ({ game, isVisible }: Props) => {
   }, [addQuestionToGame, createQuestionMutation, game.id, question])
 
   useEffect(() => {
-    console.log("value in useEffect", question)
     if (question?.text && !question.id) {
       createNewQuestion()
     } else if (question?.id) {

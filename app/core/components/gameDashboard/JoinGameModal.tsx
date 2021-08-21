@@ -42,6 +42,10 @@ const JoinGameModal = (props: Props) => {
     navigator.clipboard.writeText(joinGameUrlTitle)
   }
 
+  const onClickLink = () => {
+    debugger
+  }
+
   return (
     <MyModal
       isOpen={isOpen}
@@ -50,7 +54,9 @@ const JoinGameModal = (props: Props) => {
       description="Click on the link below to join game"
     >
       <Box display="flex" flexDirection="row" alignItems="center">
-        <Link href={joinGameUrl}>{joinGameUrlTitle}</Link>
+        <Link href={joinGameUrl} onClick={onClickLink}>
+          {joinGameUrlTitle}
+        </Link>
         <Tooltip title="Copy Link">
           <IconButton onClick={onClickCopy}>
             <DescriptionIcon />

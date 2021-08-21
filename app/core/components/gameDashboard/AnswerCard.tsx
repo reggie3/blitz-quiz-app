@@ -64,7 +64,6 @@ const AnswerCard = ({ answer, questionId, refetch }: Props) => {
   }
 
   const toggleValue = question?.correctAnswerIds.includes(answer.id) ? "correct" : "incorrect"
-  console.log("toggleValue", toggleValue)
 
   return (
     <Box key={id} mt={1}>

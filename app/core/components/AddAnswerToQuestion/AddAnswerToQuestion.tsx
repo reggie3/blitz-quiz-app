@@ -71,7 +71,6 @@ const AddAnswerToQuestion = ({ question, isVisible }: Props) => {
   }, [addAnswerToQuestion, createAnswerMutation, question.id, answer])
 
   useEffect(() => {
-    console.log("answer in useEffect", answer)
     if (answer?.text && !answer.id) {
       createNewAnswer()
     } else if (answer?.id) {

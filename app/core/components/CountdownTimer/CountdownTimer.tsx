@@ -6,7 +6,7 @@ interface Props {
   endTimeMillis: number
 }
 
-export const CountdownTimer = ({ endTimeMillis }: Props) => {
+const CountdownTimer = ({ endTimeMillis }: Props) => {
   const [minutes, setMinutes] = useState<number | null>(null)
   const [seconds, setSeconds] = useState<number | null>(null)
 
@@ -43,3 +43,5 @@ export const CountdownTimer = ({ endTimeMillis }: Props) => {
     </Paper>
   )
 }
+
+export default CountdownTimer

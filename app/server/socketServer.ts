@@ -21,7 +21,7 @@ const setupWebsocketServer = (server: Server) => {
 
     socket.on("launch-game", (gameId: string, startedById: string, callback) => {
       const gameInfo: Partial<GameInfo> = createGame({ gameId, startedById })
-
+      console.log("!!! gameInfo", gameInfo)
       callback(gameInfo)
     })
 
