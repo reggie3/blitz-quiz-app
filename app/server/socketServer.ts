@@ -1,12 +1,13 @@
 import * as socketio from "socket.io"
 import { Server } from "http"
 import { GameInfo, GamePlayerInfo } from "myTypes"
-import { gamesInfo, addUserToGame, createGame } from "./gameServerUtilities"
+import { gamesInfo, addUserToGame, createGame, getQuestion } from "./gameServerUtilities"
 
 const setupWebsocketServer = (server: Server) => {
   const io: socketio.Server = new socketio.Server()
 
   io.attach(server)
+
   const url = io.on("connect", (socket: socketio.Socket) => {
     console.log("connection")
     socket.emit("status", "Hello from Socket.io 1")
@@ -21,7 +22,12 @@ const setupWebsocketServer = (server: Server) => {
 
     socket.on("launch-game", (gameId: string, startedById: string, callback) => {
       const gameInfo: Partial<GameInfo> = createGame({ gameId, startedById })
-      console.log("!!! gameInfo", gameInfo)
+      const { gameInstanceId, startTimeMillis } = gameInfo
+
+      setTimeout(() => {
+        gameInstanceId && sendFirstQuestion(gameInstanceId)
+      }, startTimeMillis)
+
       callback(gameInfo)
     })
 
@@ -33,6 +39,7 @@ const setupWebsocketServer = (server: Server) => {
 
       io.to(gameInstanceId).emit("update-players", gamesInfo[gameInstanceId])
     })
+
     socket.on("add-name", (gameInstanceId: string, playerName: string, callback) => {
       const playerInfo: Partial<GamePlayerInfo> = addUserToGame({
         gameInstanceId,
@@ -44,6 +51,11 @@ const setupWebsocketServer = (server: Server) => {
       io.to(gameInstanceId).emit("update-players", gamesInfo[gameInstanceId])
     })
   })
+
+  const sendFirstQuestion = (gameInstanceId: string) => {
+    const question = getQuestion(gameInstanceId)
+    io.to(gameInstanceId).emit("first-question", question)
+  }
 }
 
 export default setupWebsocketServer
