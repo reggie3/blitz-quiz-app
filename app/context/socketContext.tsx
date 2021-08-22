@@ -18,6 +18,7 @@ const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (!socket) {
+      console.log("*** Creating new socket")
       const newSocket = io("", { autoConnect: false })
       newSocket.onAny((event, ...args) => {
         console.log(event, args)
