@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "blitz"
 import getAnswersBySearchText from "app/answers/queries/getAnswersBySearchText"
 import { Answer, Question } from "db"
 import { invalidateQuery } from "blitz"
-import getAnswersByGameId from "app/answers/queries/getAnswersByQuestionId"
+import getAnswersByQuestionId from "app/answers/queries/getAnswersByQuestionId"
 import updateQuestion from "app/questions/mutations/updateQuestion"
 import getQuestionsByGameId from "app/questions/queries/getQuestionsByGameId"
 import MySearchField from "../myComponents/MySearchField"
@@ -39,7 +39,7 @@ const AddAnswerToQuestion = ({ question, isVisible }: Props) => {
         id: answer.id,
         questionIds: [...answer.questionIds, questionId],
       })
-      invalidateQuery(getAnswersByGameId)
+      invalidateQuery(getAnswersByQuestionId)
     },
     [updateAnswerMutation]
   )
@@ -52,7 +52,7 @@ const AddAnswerToQuestion = ({ question, isVisible }: Props) => {
       })
       answer && addQuestionToAnswer(answer, question.id)
       invalidateQuery(getQuestionsByGameId)
-      invalidateQuery(getAnswersByGameId)
+      invalidateQuery(getAnswersByQuestionId)
     },
     [addQuestionToAnswer, answer, question.answerIds, question.id, updateQuestionMutation]
   )
