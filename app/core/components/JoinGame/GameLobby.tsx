@@ -12,12 +12,13 @@ import { RootState } from "app/redux/store"
 import HasJoinedGameCard from "./HasJoinedGameCard/HasJoinedGameCard"
 import CountdownTimer from "app/core/components/CountdownTimer/CountdownTimer"
 import { useRouter } from "blitz"
+import { setDashboardView, DashboardViews } from "app/redux/uiSlice"
 
-interface Props {
-  gameInstanceToJoin: string | string[] | undefined
-}
+const GameLobby = () => {
+  const { gameInstanceId: gameInstanceToJoin } = useSelector(
+    (state: RootState) => state.game.gameInfo
+  )
 
-const GameLobby = ({ gameInstanceToJoin }: Props) => {
   const router = useRouter()
 
   const { socket } = useSocket()
@@ -66,7 +67,7 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
 
   const onCountdownComplete = () => {
     console.log("onCountdownComplete ***")
-    router.push(`/play-game/${gameInstanceToJoin}`)
+    dispatch(setDashboardView(DashboardViews.PLAY_GAME))
   }
 
   return (

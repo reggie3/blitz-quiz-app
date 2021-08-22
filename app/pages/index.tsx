@@ -5,6 +5,7 @@ import ModalContainer from "app/core/components/myComponents/ModalContainer"
 import { Box } from "@material-ui/core"
 import { GamePlayControls } from "app/core/components/GamePlayControls"
 import GameDashboard from "app/core/components/GameDashboard/GameDashboard"
+import { SocketProvider } from "app/context/socketContext"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
@@ -57,10 +58,12 @@ const Home: BlitzPage = () => {
   return (
     <div className="container" data-testid="index-page">
       <Suspense fallback="Loading...">
-        <Box flex={2} padding={2}>
+        {/* <Box flex={2} padding={2}>
           <GamePlayControls />
-        </Box>
-        <GameDashboard />
+        </Box> */}
+        <SocketProvider>
+          <GameDashboard />
+        </SocketProvider>
         <ModalContainer />
       </Suspense>
     </div>

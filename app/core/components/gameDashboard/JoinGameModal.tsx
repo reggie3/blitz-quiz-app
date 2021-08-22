@@ -1,4 +1,4 @@
-import { Box, IconButton, Tooltip } from "@material-ui/core"
+import { Box, Button, IconButton, Tooltip, Typography } from "@material-ui/core"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import { ModalNames, closeModal } from "app/redux/modalSlice"
 import { RootState } from "app/redux/store"
@@ -7,6 +7,9 @@ import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { MyModal } from "../myComponents/MyModal/MyModal"
 import DescriptionIcon from "@material-ui/icons/Description"
+import MyButton from "../myComponents/MyButton"
+import { setDashboardView, DashboardViews } from "app/redux/uiSlice"
+import { setGameId, setGameInfo } from "app/redux/gameSlice"
 
 interface Props {}
 
@@ -42,24 +45,33 @@ const JoinGameModal = (props: Props) => {
     navigator.clipboard.writeText(joinGameUrlTitle)
   }
 
-  const onClickLink = () => {
-    debugger
+  const onClickJoinGame = () => {
+    closeJoinGameModal()
+    dispatch(setGameId(gameInstanceId))
+    dispatch(setDashboardView(DashboardViews.JOIN_GAME))
   }
 
   return (
-    <MyModal
-      isOpen={isOpen}
-      onClickClose={closeJoinGameModal}
-      title="Join New Game"
-      description="Click on the link below to join game"
-    >
-      <Box display="flex" flexDirection="row" alignItems="center">
-        <Link href={joinGameUrl}>{joinGameUrlTitle}</Link>
-        <Tooltip title="Copy Link">
-          <IconButton onClick={onClickCopy}>
-            <DescriptionIcon />
-          </IconButton>
-        </Tooltip>
+    <MyModal isOpen={isOpen} onClickClose={closeJoinGameModal} title="Join New Game">
+      <Box>
+        <MyButton onClick={onClickJoinGame}>Join Game</MyButton>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          paddingTop={2}
+        >
+          <Typography>Invite link:</Typography>
+          <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center">
+            <Link href="#">{joinGameUrlTitle}</Link>
+            <Tooltip title="Copy Link">
+              <IconButton onClick={onClickCopy}>
+                <DescriptionIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
       </Box>
     </MyModal>
   )

@@ -4,6 +4,8 @@ export enum DashboardViews {
   GAMES = "GAMES",
   QUESTIONS = "QUESTIONS",
   ANSWERS = "ANSWERS",
+  JOIN_GAME = "JOIN_GAME",
+  PLAY_GAME = "PLAY_GAME",
 }
 export interface uiState {
   dashboardView: DashboardViews
