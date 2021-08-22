@@ -1,7 +1,7 @@
 import * as socketio from "socket.io"
 import { Server } from "http"
 import { GameInfo, GamePlayerInfo } from "myTypes"
-import { gamesInfo, addUserToGame, createGame, getQuestion } from "./gameServerUtilities"
+import { gamesInfo, addUserToGame, launchGame, getQuestion } from "./gameServerUtilities"
 
 const setupWebsocketServer = (server: Server) => {
   const io: socketio.Server = new socketio.Server()
@@ -20,13 +20,13 @@ const setupWebsocketServer = (server: Server) => {
       console.log(event, args)
     })
 
-    socket.on("launch-game", (gameId: string, startedById: string, callback) => {
-      const gameInfo: Partial<GameInfo> = createGame({ gameId, startedById })
+    socket.on("launch-game", (gameId: string, startedById: string, urlRoot: string, callback) => {
+      const gameInfo: Partial<GameInfo> = launchGame({ gameId, startedById, urlRoot })
       const { gameInstanceId, startTimeMillis } = gameInfo
-
-      setTimeout(() => {
-        gameInstanceId && sendFirstQuestion(gameInstanceId)
-      }, startTimeMillis)
+      gameInstanceId && sendFirstQuestion(gameInstanceId)
+      // setTimeout(() => {
+      //   gameInstanceId && sendFirstQuestion(gameInstanceId)
+      // }, startTimeMillis)
 
       callback(gameInfo)
     })
@@ -50,12 +50,22 @@ const setupWebsocketServer = (server: Server) => {
 
       io.to(gameInstanceId).emit("update-players", gamesInfo[gameInstanceId])
     })
-  })
 
-  const sendFirstQuestion = (gameInstanceId: string) => {
-    const question = getQuestion(gameInstanceId)
-    io.to(gameInstanceId).emit("first-question", question)
-  }
+    socket.on("get-game-info", (gameInstanceId: string, callback) => {
+      console.log(gamesInfo[gameInstanceId])
+      callback(gamesInfo[gameInstanceId])
+    })
+
+    const sendFirstQuestion = async (gameInstanceId: string) => {
+      const question = await getQuestion(gameInstanceId)
+      console.log("*** sendFirstQuestion", question)
+      try {
+        io.to(gameInstanceId).emit("first-question", question)
+      } catch (e) {
+        console.log("e", e)
+      }
+    }
+  })
 }
 
 export default setupWebsocketServer

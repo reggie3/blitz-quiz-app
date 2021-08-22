@@ -10,9 +10,9 @@ import {
   NumberDictionary,
 } from "unique-names-generator"
 
-// const GAME_WAIT_TIME = 60000
+const GAME_WAIT_TIME = 60000
 
-const GAME_WAIT_TIME = 10000
+// const GAME_WAIT_TIME = 10000
 
 export const gamesInfo: Record<string, GameInfo> = {}
 
@@ -26,19 +26,23 @@ const getGameInstanceId = (): string => {
   return uniqueNamesGenerator(customConfig)
 }
 
-export const createGame = ({
+export const launchGame = ({
   gameId,
   startedById,
+  urlRoot,
 }: {
   gameId: string
   startedById: string
+  urlRoot: string
 }): Partial<GameInfo> => {
   const gameInstanceId = getGameInstanceId()
+  const joinUrl = urlRoot + "play-game/" + gameInstanceId
   const startTimeMillis = Date.now() + GAME_WAIT_TIME
   const gameInfo = {
     gameInstanceId,
     startedById: startedById,
     gameId,
+    joinUrl,
     startTimeMillis,
     questionInfo: {
       currentQuestionNumber: 0,

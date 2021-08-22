@@ -14,6 +14,7 @@ export interface QuestionInfo {
 export interface GameInfo {
   gameInstanceId: string
   gameId: string
+  joinUrl: string
   startedById: string
   startedAt: number
   gamePlayers: Record<string, GamePlayerInfo>

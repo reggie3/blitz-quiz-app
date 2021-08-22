@@ -19,12 +19,15 @@ export const gameSlice = createSlice({
     setGameId: (state: GameState, action: PayloadAction<string>) => {
       state.gameInfo.gameId = action.payload
     },
+    setGameInstanceId: (state: GameState, action: PayloadAction<string>) => {
+      state.gameInfo.gameId = action.payload
+    },
     setGameInfo: (state: GameState, action: PayloadAction<GameInfo>) => {
       state.gameInfo = action.payload
     },
   },
 })
 
-export const { clearGameId, setGameId, setGameInfo } = gameSlice.actions
+export const { clearGameId, setGameId, setGameInfo, setGameInstanceId } = gameSlice.actions
 
 export default gameSlice.reducer

@@ -1,5 +1,6 @@
 import { setGameInfo } from "app/redux/gameSlice"
 import { useSession } from "blitz"
+import { Question } from "db"
 import { GameInfo } from "myTypes"
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
@@ -32,16 +33,21 @@ const SocketProvider = ({ children }) => {
     if (socket.current) {
       // client-side
       socket.current.on("connect", () => {
-        console.log("connect", socket.current.id) // x8WIv7-mJelg7on_ALbx
+        console.log("connect", socket.current!.id) // x8WIv7-mJelg7on_ALbx
       })
 
       socket.current.on("disconnect", () => {
-        console.log("disconnect", socket.current.id) // undefined
+        console.log("disconnect", socket.current!.id) // undefined
       })
 
       socket.current.on("update-players", (gameInfo: GameInfo) => {
         console.log("update-players", gameInfo)
         dispatch(setGameInfo(gameInfo))
+      })
+      socket.current.on("first-question", (question: Question) => {
+        console.log("first-question", question)
+        debugger
+        // dispatch(setGameInfo(gameInfo))
       })
     }
   }, [dispatch])

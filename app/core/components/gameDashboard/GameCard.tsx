@@ -48,9 +48,15 @@ const GameCard = ({ game, refetch }: Props) => {
   const onClickStart = (gameId: string) => {
     if (socket) {
       socket.connect()
-      socket.emit("launch-game", gameId, currentUser?.id, (message: GameInfo) => {
-        dispatch(setGameInfo(message))
-      })
+      socket.emit(
+        "launch-game",
+        gameId,
+        currentUser?.id,
+        window.location.href,
+        (message: GameInfo) => {
+          dispatch(setGameInfo(message))
+        }
+      )
     }
   }
 
