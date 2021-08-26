@@ -56,8 +56,6 @@ const GameLobby = ({ gameInstanceId }: GameLobbyProps) => {
     }
   }, [gamePlayers, socket])
 
-  console.log("startTimeMillis", startTimeMillis)
-
   if (hasJoinGameError) {
     return (
       <Box

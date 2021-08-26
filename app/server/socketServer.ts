@@ -23,12 +23,19 @@ const setupWebsocketServer = (server: Server) => {
     socket.on("launch-game", (gameId: string, startedById: string, urlRoot: string, callback) => {
       const gameInfo: Partial<GameInfo> = launchGame({ gameId, startedById, urlRoot })
       const { gameInstanceId, startTimeMillis } = gameInfo
-      gameInstanceId && sendFirstQuestion(gameInstanceId)
-      // setTimeout(() => {
-      //   gameInstanceId && sendFirstQuestion(gameInstanceId)
-      // }, startTimeMillis)
 
+      console.log("---- emitting first question ------ gameInstanceId", gameInstanceId)
       callback(gameInfo)
+
+      //gameInstanceId && io.to(gameInstanceId).emit("first-question", "test")
+
+      // gameInstanceId && sendFirstQuestion(gameInstanceId)
+      if (gameInstanceId && startTimeMillis) {
+        const interval = startTimeMillis - Date.now()
+        setTimeout(() => {
+          sendFirstQuestion(gameInstanceId)
+        }, interval)
+      }
     })
 
     socket.on("join-game", (gameInstanceId: string, callback) => {
@@ -58,12 +65,11 @@ const setupWebsocketServer = (server: Server) => {
 
     const sendFirstQuestion = async (gameInstanceId: string) => {
       const question = await getQuestion(gameInstanceId)
-      console.log("*** sendFirstQuestion", question)
-      try {
-        io.to(gameInstanceId).emit("first-question", question)
-      } catch (e) {
-        console.log("e", e)
-      }
+      console.log("*** sendFirstQuestion ***", question)
+      console.log("*** gameInstanceId ***", gameInstanceId)
+      console.log("*** question ***", question)
+
+      io.to(gameInstanceId).emit("first-question", question)
     }
   })
 }

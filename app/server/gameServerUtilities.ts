@@ -10,7 +10,7 @@ import {
   NumberDictionary,
 } from "unique-names-generator"
 
-const GAME_WAIT_TIME = 60000
+const GAME_WAIT_TIME = 15000
 
 // const GAME_WAIT_TIME = 10000
 
