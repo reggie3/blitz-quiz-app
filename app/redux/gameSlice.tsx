@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { GameInfo } from "myTypes"
+import { Question } from "db"
+import { GameInfo, QuestionWithAnswers } from "myTypes"
 
 export interface GameState {
   gameInfo: GameInfo
@@ -25,9 +26,13 @@ export const gameSlice = createSlice({
     setGameInfo: (state: GameState, action: PayloadAction<GameInfo>) => {
       state.gameInfo = action.payload
     },
+    addQuestion: (state: GameState, action: PayloadAction<QuestionWithAnswers>) => {
+      state.gameInfo.questionsWithAnswers.push(action.payload)
+    },
   },
 })
 
-export const { clearGameId, setGameId, setGameInfo, setGameInstanceId } = gameSlice.actions
+export const { addQuestion, clearGameId, setGameId, setGameInfo, setGameInstanceId } =
+  gameSlice.actions
 
 export default gameSlice.reducer

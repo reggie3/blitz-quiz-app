@@ -1,7 +1,6 @@
-import { setGameInfo } from "app/redux/gameSlice"
+import { addQuestion, setGameInfo } from "app/redux/gameSlice"
 import { useSession } from "blitz"
-import { Question } from "db"
-import { GameInfo } from "myTypes"
+import { GameInfo, QuestionWithAnswers } from "myTypes"
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Socket } from "socket.io-client"
@@ -44,10 +43,10 @@ const SocketProvider = ({ children }) => {
         console.log("update-players", gameInfo)
         dispatch(setGameInfo(gameInfo))
       })
-      socket.current.on("first-question", (question: Question) => {
-        console.log("first-question", question)
-        debugger
-        // dispatch(setGameInfo(gameInfo))
+      socket.current.on("new-question", (questionWithAnswers: QuestionWithAnswers) => {
+        console.log("new-question", questionWithAnswers)
+        console.log(JSON.stringify(questionWithAnswers))
+        dispatch(addQuestion(questionWithAnswers))
       })
     }
   }, [dispatch])

@@ -5,10 +5,9 @@ export interface GamePlayerInfo {
   playerName: string
 }
 
-export interface QuestionInfo {
-  currentQuestionNumber: number
-  currentQuestion: Question
-  currentAnswers: Answer[]
+export interface QuestionWithAnswers {
+  question: Question
+  answers: Answer[]
 }
 
 export interface GameInfo {
@@ -19,5 +18,5 @@ export interface GameInfo {
   startedAt: number
   gamePlayers: Record<string, GamePlayerInfo>
   startTimeMillis: number
-  questionInfo: QuestionInfo
+  questionsWithAnswers: QuestionWithAnswers[]
 }

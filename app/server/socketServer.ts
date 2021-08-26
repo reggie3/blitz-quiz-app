@@ -69,7 +69,7 @@ const setupWebsocketServer = (server: Server) => {
       console.log("*** gameInstanceId ***", gameInstanceId)
       console.log("*** question ***", question)
 
-      io.to(gameInstanceId).emit("first-question", question)
+      io.to(gameInstanceId).emit("new-question", question)
     }
   })
 }
