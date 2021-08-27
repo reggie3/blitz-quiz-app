@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { Question } from "db"
 import { GameInfo, QuestionWithAnswers } from "myTypes"
 
 export interface GameState {
