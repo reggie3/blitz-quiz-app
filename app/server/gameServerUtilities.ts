@@ -1,4 +1,5 @@
-import { GameInfo } from "myTypes"
+import db, { Question } from "db"
+import { GameInfo, QuestionWithAnswers } from "myTypes"
 import randomColor from "random-color"
 import {
   uniqueNamesGenerator,
@@ -9,7 +10,9 @@ import {
   NumberDictionary,
 } from "unique-names-generator"
 
-const GAME_WAIT_TIME = 60000
+const GAME_WAIT_TIME = 15000
+
+// const GAME_WAIT_TIME = 10000
 
 export const gamesInfo: Record<string, GameInfo> = {}
 
@@ -23,19 +26,25 @@ const getGameInstanceId = (): string => {
   return uniqueNamesGenerator(customConfig)
 }
 
-export const createGame = ({
+export const launchGame = ({
   gameId,
   startedById,
+  urlRoot,
 }: {
   gameId: string
   startedById: string
+  urlRoot: string
 }): Partial<GameInfo> => {
   const gameInstanceId = getGameInstanceId()
+  const joinUrl = urlRoot + "play-game/" + gameInstanceId
+  const startTimeMillis = Date.now() + GAME_WAIT_TIME
   const gameInfo = {
     gameInstanceId,
     startedById: startedById,
     gameId,
-    startTimeMillis: Date.now() + GAME_WAIT_TIME,
+    joinUrl,
+    startTimeMillis,
+    questionsWithAnswers: [] as QuestionWithAnswers[],
   } as GameInfo
 
   gamesInfo[gameInstanceId] = gameInfo
@@ -81,4 +90,32 @@ export const addUserToGame = ({
   }
 
   return newGamePlayerInfo
+}
+
+export const getQuestion = async (gameInstanceId: string): Promise<QuestionWithAnswers | null> => {
+  const gameInfo = gamesInfo[gameInstanceId]
+  if (!gameInfo) return null
+
+  const { gameId } = gameInfo
+  const game = await db.game.findFirst({ where: { id: gameId } })
+
+  if (!game) return null
+  const { questionIds } = game
+  const currentQuestionId =
+    questionIds[gamesInfo[gameInstanceId]?.questionsWithAnswers?.length ?? 0]
+
+  const question = await db.question.findFirst({ where: { id: currentQuestionId } })
+
+  if (!question) return null
+
+  const answers = await db.answer.findMany({ where: { questionIds: { has: question.id } } })
+
+  if (!answers) return null
+
+  const newQuestionWithAnswer: QuestionWithAnswers = { question, answers }
+  gamesInfo[gameInstanceId]?.questionsWithAnswers.push(newQuestionWithAnswer)
+  // console.log("+++++++++++++++++++++++++++")
+  // console.log(gamesInfo[gameInstanceId]!.questionInfo)
+
+  return newQuestionWithAnswer
 }

@@ -11,14 +11,16 @@ import JoinGameCard from "../JoinGameCard/JoinGameCard"
 import { RootState } from "app/redux/store"
 import HasJoinedGameCard from "./HasJoinedGameCard/HasJoinedGameCard"
 import CountdownTimer from "app/core/components/CountdownTimer/CountdownTimer"
-import { useRouter } from "blitz"
+import { setDashboardView, DashboardViews, setGamePlayView, GamePlayViews } from "app/redux/uiSlice"
+import { useParams } from "blitz"
 
-interface Props {
-  gameInstanceToJoin: string | string[] | undefined
+interface GameLobbyProps {
+  gameInstanceId?: string
 }
 
-const GameLobby = ({ gameInstanceToJoin }: Props) => {
-  const router = useRouter()
+const GameLobby = ({ gameInstanceId }: GameLobbyProps) => {
+  const { gameInfo } = useSelector((state: RootState) => state.game)
+  const { joinUrl } = gameInfo
 
   const { socket } = useSocket()
   const theme = useTheme()
@@ -27,10 +29,17 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
   const [hasJoinedGame, setHasJoinedGame] = useState(false)
   const [hasJoinGameError, setHasJoinGameError] = useState(false)
   const { gamePlayers, startTimeMillis } = useSelector((state: RootState) => state.game.gameInfo)
+  const [gameInstanceIdToJoin, setGameInstanceIdToJoin] = useState("")
 
   useEffect(() => {
-    if (!isInitialized && socket && gameInstanceToJoin) {
-      socket.emit("join-game", gameInstanceToJoin, (message: GameInfo) => {
+    if (!gameInstanceIdToJoin && (gameInstanceId || gameInfo.gameInstanceId)) {
+      setGameInstanceIdToJoin(gameInstanceId || gameInfo.gameInstanceId)
+    }
+  }, [gameInstanceId, gameInfo, gameInstanceIdToJoin])
+
+  useEffect(() => {
+    if (!isInitialized && socket && gameInstanceIdToJoin) {
+      socket.emit("join-game", gameInstanceIdToJoin, (message: GameInfo) => {
         if (!message) {
           setHasJoinGameError(true)
         } else {
@@ -39,15 +48,13 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
       })
       setIsInitialized(true)
     }
-  }, [dispatch, gameInstanceToJoin, isInitialized, socket])
+  }, [dispatch, gameInstanceIdToJoin, isInitialized, socket])
 
   useEffect(() => {
     if (socket && Object.keys(gamePlayers ?? {}).includes(socket.id)) {
       setHasJoinedGame(true)
     }
   }, [gamePlayers, socket])
-
-  console.log("startTimeMillis", startTimeMillis)
 
   if (hasJoinGameError) {
     return (
@@ -66,7 +73,8 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
 
   const onCountdownComplete = () => {
     console.log("onCountdownComplete ***")
-    router.push(`/play-game/${gameInstanceToJoin}`)
+    dispatch(setDashboardView(DashboardViews.PLAY_GAME))
+    dispatch(setGamePlayView(GamePlayViews.PLAY_GAME))
   }
 
   return (
@@ -81,12 +89,14 @@ const GameLobby = ({ gameInstanceToJoin }: Props) => {
           <CountdownTimer endTimeMillis={startTimeMillis} onComplete={onCountdownComplete} />
         </Box>
       )}
-      <Box py={1}>
-        <CopyLinkCard url={window.location.href} />
-      </Box>
+      {joinUrl && (
+        <Box py={1}>
+          <CopyLinkCard url={joinUrl} />
+        </Box>
+      )}
       {!hasJoinedGame && (
         <Box py={1}>
-          <JoinGameCard gameInstanceToJoin={gameInstanceToJoin as string} />
+          <JoinGameCard gameInstanceToJoin={gameInstanceIdToJoin as string} />
         </Box>
       )}
       {hasJoinedGame && (

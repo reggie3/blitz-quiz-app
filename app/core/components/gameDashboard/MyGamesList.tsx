@@ -5,7 +5,6 @@ import ListHeader from "../myComponents/ListHeader"
 import GameCard from "./GameCard"
 import { Game } from "db"
 import getGamesByUserId from "app/games/queries/getGamesByUserId"
-import { SocketProvider } from "app/context/socketContext"
 
 interface Props {}
 
@@ -35,20 +34,18 @@ const MyGamesList = (props: Props) => {
 
   return (
     <div>
-      <SocketProvider>
-        <ListHeader
-          startButtonProps={[
-            {
-              icon: <AddIcon />,
-              label: "Create New Game",
-              onClick: onClickNewGame,
-            },
-          ]}
-        />
-        {!games?.length && <p>No games yet.</p>}
-        {Boolean(games?.length) &&
-          games.map((game: Game) => <GameCard key={game.id} game={game} refetch={refetch} />)}
-      </SocketProvider>
+      <ListHeader
+        startButtonProps={[
+          {
+            icon: <AddIcon />,
+            label: "Create New Game",
+            onClick: onClickNewGame,
+          },
+        ]}
+      />
+      {!games?.length && <p>No games yet.</p>}
+      {Boolean(games?.length) &&
+        games.map((game: Game) => <GameCard key={game.id} game={game} refetch={refetch} />)}
     </div>
   )
 }

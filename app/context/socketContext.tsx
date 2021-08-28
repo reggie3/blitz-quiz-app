@@ -1,52 +1,59 @@
-import { setGameInfo } from "app/redux/gameSlice"
+import { addQuestion, setGameInfo } from "app/redux/gameSlice"
 import { useSession } from "blitz"
-import { GameInfo } from "myTypes"
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { GameInfo, QuestionWithAnswers } from "myTypes"
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Socket } from "socket.io-client"
 import { io } from "socket.io-client"
 import { SocketMessages } from "socketTypes"
 
-const SocketContext = React.createContext<
-  { socket: Socket | null; setSocket: Dispatch<SetStateAction<null>> } | undefined
->(undefined)
+const SocketContext = React.createContext<{ socket: Socket | null } | undefined>(undefined)
 
 const SocketProvider = ({ children }) => {
-  const [socket, setSocket] = useState<Socket | null>(null)
+  // const [socket, setSocket] = useState<Socket | null>(null)
+  const socket = useRef<Socket | null>(null)
   const session = useSession()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!socket) {
+    if (!socket.current) {
+      console.log("*** Creating new socket")
       const newSocket = io("", { autoConnect: false })
       newSocket.onAny((event, ...args) => {
         console.log(event, args)
       })
       newSocket.auth = { username: session.userId }
       newSocket.connect()
-      setSocket(newSocket)
+      socket.current = newSocket
     }
   }, [session.userId, socket])
 
   useEffect(() => {
-    if (socket) {
+    if (socket.current) {
       // client-side
-      socket.on("connect", () => {
-        console.log("connect", socket.id) // x8WIv7-mJelg7on_ALbx
+      socket.current.on("connect", () => {
+        console.log("connect", socket.current!.id) // x8WIv7-mJelg7on_ALbx
       })
 
-      socket.on("disconnect", () => {
-        console.log("disconnect", socket.id) // undefined
+      socket.current.on("disconnect", () => {
+        console.log("disconnect", socket.current!.id) // undefined
       })
 
-      socket.on("update-players", (gameInfo: GameInfo) => {
+      socket.current.on("update-players", (gameInfo: GameInfo) => {
         console.log("update-players", gameInfo)
         dispatch(setGameInfo(gameInfo))
       })
+      socket.current.on("new-question", (questionWithAnswers: QuestionWithAnswers) => {
+        console.log("new-question", questionWithAnswers)
+        console.log(JSON.stringify(questionWithAnswers))
+        dispatch(addQuestion(questionWithAnswers))
+      })
     }
-  }, [dispatch, socket])
+  }, [dispatch])
 
-  return <SocketContext.Provider value={{ socket, setSocket }}>{children}</SocketContext.Provider>
+  return (
+    <SocketContext.Provider value={{ socket: socket.current }}>{children}</SocketContext.Provider>
+  )
 }
 
 function useSocket() {
