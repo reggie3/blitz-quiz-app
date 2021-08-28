@@ -1,9 +1,22 @@
 import React, { useState } from "react"
 import { Answer } from "db"
-import { Box, Typography } from "@material-ui/core"
+import { Box, Button, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core"
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab"
+import RadioButtonCheckedIcon from "@material-ui/icons/RadioButtonChecked"
+import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked"
 
+const StartIcon = ({
+  answerId,
+  selectedAnswers,
+}: {
+  answerId: string
+  selectedAnswers: string[]
+}) => {
+  if (selectedAnswers.includes(answerId)) {
+    return <RadioButtonCheckedIcon />
+  }
+  return <RadioButtonUncheckedIcon />
+}
 interface Props {
   answers?: Answer[]
 }
@@ -12,8 +25,14 @@ const AnswerView = ({ answers }: Props) => {
   const { answerGrid, toggleButton, toggleButtonGroup } = useStyles()
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([])
 
-  const onChangeAnswer = (_event, newAnswers: string[]) => {
-    setSelectedAnswers(newAnswers)
+  const onClickAnswer = (answerId: string) => {
+    if (selectedAnswers.includes(answerId)) {
+      setSelectedAnswers((prevSelectedAnswerIds) =>
+        prevSelectedAnswerIds.filter((prevSelectedAnswerId) => prevSelectedAnswerId !== answerId)
+      )
+    } else {
+      setSelectedAnswers((prev) => [...prev, answerId])
+    }
   }
 
   if (!answers) return null
@@ -21,20 +40,21 @@ const AnswerView = ({ answers }: Props) => {
   return (
     <Box className={answerGrid}>
       {answers.map((answer) => (
-        <Box key={answer.id} display="flex" justifyContent="center" alignItems="center">
-          <ToggleButtonGroup
-            className={toggleButtonGroup}
-            value={selectedAnswers}
-            onChange={onChangeAnswer}
-            aria-label="answers"
-          >
-            <ToggleButton className={toggleButton} value={answer.id}>
+        <Button
+          key={answer.id}
+          value={answer.id}
+          onClick={() => onClickAnswer(answer.id)}
+          variant="contained"
+        >
+          <Box display="flex" flexDirection="row" width="100%">
+            <StartIcon answerId={answer.id} selectedAnswers={selectedAnswers} />
+            <Box flex={1}>
               <Typography variant="body1" aria-label={answer.text}>
                 {answer.text}
               </Typography>
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
+            </Box>
+          </Box>
+        </Button>
       ))}
     </Box>
   )
