@@ -8,6 +8,7 @@ export interface GamePlayerInfo {
 export interface QuestionWithAnswers {
   question: Question
   answers: Answer[]
+  endTimeMillis: number
 }
 
 export interface GameInfo {

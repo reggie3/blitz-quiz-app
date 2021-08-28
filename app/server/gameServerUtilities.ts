@@ -11,6 +11,7 @@ import {
 } from "unique-names-generator"
 
 const GAME_WAIT_TIME = 15000
+const QUESTION_WAIT_TIME = 10000
 
 // const GAME_WAIT_TIME = 10000
 
@@ -112,7 +113,11 @@ export const getQuestion = async (gameInstanceId: string): Promise<QuestionWithA
 
   if (!answers) return null
 
-  const newQuestionWithAnswer: QuestionWithAnswers = { question, answers }
+  const newQuestionWithAnswer: QuestionWithAnswers = {
+    question,
+    answers,
+    endTimeMillis: Date.now() + QUESTION_WAIT_TIME,
+  }
   gamesInfo[gameInstanceId]?.questionsWithAnswers.push(newQuestionWithAnswer)
   // console.log("+++++++++++++++++++++++++++")
   // console.log(gamesInfo[gameInstanceId]!.questionInfo)

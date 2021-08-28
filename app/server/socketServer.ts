@@ -69,7 +69,15 @@ const setupWebsocketServer = (server: Server) => {
       console.log("*** gameInstanceId ***", gameInstanceId)
       console.log("*** question ***", question)
 
+      if (!question) return null
+
       io.to(gameInstanceId).emit("new-question", question)
+      const interval = question.endTimeMillis - Date.now()
+
+      setTimeout(() => {
+        console.log("end-round")
+        io.to(gameInstanceId).emit("end-round")
+      }, interval)
     }
   })
 }
