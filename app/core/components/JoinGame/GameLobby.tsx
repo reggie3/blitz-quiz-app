@@ -12,7 +12,6 @@ import { RootState } from "app/redux/store"
 import HasJoinedGameCard from "./HasJoinedGameCard/HasJoinedGameCard"
 import CountdownTimer from "app/core/components/CountdownTimer/CountdownTimer"
 import { setDashboardView, DashboardViews, setGamePlayView, GamePlayViews } from "app/redux/uiSlice"
-import { useParams } from "blitz"
 
 interface GameLobbyProps {
   gameInstanceId?: string

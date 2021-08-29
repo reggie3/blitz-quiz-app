@@ -11,7 +11,7 @@ import {
 } from "unique-names-generator"
 
 const GAME_WAIT_TIME = 15000
-const QUESTION_WAIT_TIME = 10000
+const QUESTION_WAIT_TIME = 5000
 
 // const GAME_WAIT_TIME = 10000
 

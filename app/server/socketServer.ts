@@ -63,6 +63,14 @@ const setupWebsocketServer = (server: Server) => {
       callback(gamesInfo[gameInstanceId])
     })
 
+    socket.on(
+      "send-player-answers",
+      (gameInstanceId: string, selectedAnswers: string[], callback) => {
+        //console.log(gamesInfo[gameInstanceId])
+        callback()
+      }
+    )
+
     const sendFirstQuestion = async (gameInstanceId: string) => {
       const question = await getQuestion(gameInstanceId)
       console.log("*** sendFirstQuestion ***", question)

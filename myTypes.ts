@@ -1,4 +1,5 @@
 import { Answer, Question } from "db"
+
 export interface GamePlayerInfo {
   playerColor: string
   playerId: string
@@ -20,4 +21,5 @@ export interface GameInfo {
   gamePlayers: Record<string, GamePlayerInfo>
   startTimeMillis: number
   questionsWithAnswers: QuestionWithAnswers[]
+  isRoundComplete: boolean
 }

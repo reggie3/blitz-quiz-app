@@ -1,3 +1,4 @@
+import { Box } from "@material-ui/core"
 import { RootState } from "app/redux/store"
 import React from "react"
 import { useSelector } from "react-redux"
@@ -12,10 +13,10 @@ const QuestionWithAnswer = (props: Props) => {
       state.game.gameInfo.questionsWithAnswers[state.game.gameInfo.questionsWithAnswers.length - 1]
   )
   return (
-    <div>
+    <Box width="100%" data-testid="question-with-answer-root-container">
       <QuestionView question={questionToDisplay?.question} />
       <AnswerView answers={questionToDisplay?.answers} />
-    </div>
+    </Box>
   )
 }
 
