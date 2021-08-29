@@ -5,9 +5,10 @@ import { makeStyles } from "@material-ui/core"
 import RadioButtonCheckedIcon from "@material-ui/icons/RadioButtonChecked"
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked"
 import { RootState } from "app/redux/store"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useSocket } from "app/context/socketContext"
-import { setGameInfo } from "app/redux/gameSlice"
+import { setGameInfo, setGamePlayerInfo } from "app/redux/gameSlice"
+import { GamePlayerInfo } from "myTypes"
 
 const StartIcon = ({
   answerId,
@@ -26,17 +27,26 @@ interface Props {
 }
 
 const AnswerView = ({ answers }: Props) => {
-  const { isRoundComplete, gameId } = useSelector((state: RootState) => state.game.gameInfo)
+  const { isRoundComplete, gameInstanceId } = useSelector((state: RootState) => state.game.gameInfo)
   const { answerGrid, toggleButton, toggleButtonGroup } = useStyles()
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([])
   const { socket } = useSocket()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (isRoundComplete && socket) {
       socket.connect()
-      socket.emit("send-player-answers", gameId, selectedAnswers, () => {
-        console.log("response to send-player-answers received")
-      })
+      socket.emit(
+        "send-player-answers",
+        gameInstanceId,
+        selectedAnswers,
+        (response: Record<string, GamePlayerInfo> | null) => {
+          console.log("response to send-player-answers received", response)
+          if (response) {
+            dispatch(setGamePlayerInfo(response))
+          }
+        }
+      )
     }
     // only run based on value of isRoundComplete
     // eslint-disable-next-line react-hooks/exhaustive-deps

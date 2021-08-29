@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { GameInfo, QuestionWithAnswers } from "myTypes"
+import { GameInfo, GamePlayerInfo, QuestionWithAnswers } from "myTypes"
 
 export interface GameState {
   gameInfo: GameInfo
@@ -31,6 +31,12 @@ export const gameSlice = createSlice({
     setIsRoundComplete: (state: GameState, action: PayloadAction<boolean>) => {
       state.gameInfo.isRoundComplete = action.payload
     },
+    setGamePlayerInfo: (
+      state: GameState,
+      action: PayloadAction<Record<string, GamePlayerInfo>>
+    ) => {
+      state.gameInfo.gamePlayers = action.payload
+    },
   },
 })
 
@@ -41,6 +47,7 @@ export const {
   setGameInfo,
   setGameInstanceId,
   setIsRoundComplete,
+  setGamePlayerInfo,
 } = gameSlice.actions
 
 export default gameSlice.reducer

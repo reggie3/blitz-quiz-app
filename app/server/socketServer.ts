@@ -1,7 +1,13 @@
 import * as socketio from "socket.io"
 import { Server } from "http"
 import { GameInfo, GamePlayerInfo } from "myTypes"
-import { gamesInfo, addUserToGame, launchGame, getQuestion } from "./gameServerUtilities"
+import {
+  gamesInfo,
+  addUserToGame,
+  launchGame,
+  getQuestion,
+  handlePlayerAnswers,
+} from "./gameServerUtilities"
 
 const setupWebsocketServer = (server: Server) => {
   const io: socketio.Server = new socketio.Server()
@@ -65,9 +71,11 @@ const setupWebsocketServer = (server: Server) => {
 
     socket.on(
       "send-player-answers",
-      (gameInstanceId: string, selectedAnswers: string[], callback) => {
-        //console.log(gamesInfo[gameInstanceId])
-        callback()
+      (gameInstanceId: string, playerAnswerIds: string[], callback) => {
+        const answerResults = handlePlayerAnswers(gameInstanceId, socket.id, playerAnswerIds)
+
+        console.log("answerResults", answerResults)
+        callback(answerResults)
       }
     )
 

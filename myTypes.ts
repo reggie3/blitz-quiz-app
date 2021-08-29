@@ -1,9 +1,14 @@
 import { Answer, Question } from "db"
 
+export interface RoundResult {
+  score: number
+  cumulativeScore: number
+}
 export interface GamePlayerInfo {
   playerColor: string
   playerId: string
   playerName: string
+  roundResults: RoundResult[]
 }
 
 export interface QuestionWithAnswers {
@@ -22,4 +27,5 @@ export interface GameInfo {
   startTimeMillis: number
   questionsWithAnswers: QuestionWithAnswers[]
   isRoundComplete: boolean
+  scoreMultiplier: number
 }

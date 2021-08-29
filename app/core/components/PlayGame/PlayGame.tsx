@@ -4,6 +4,7 @@ import React from "react"
 import { useSelector } from "react-redux"
 import CountdownTimer from "../CountdownTimer/CountdownTimer"
 import QuestionWithAnswer from "../QuestionWithAnswer/QuestionWithAnswer"
+import ScoreCard from "../ScoreCard/ScoreCard"
 
 const PlayGame = () => {
   const { gameInfo } = useSelector((state: RootState) => state.game)
@@ -30,7 +31,13 @@ const PlayGame = () => {
           <CountdownTimer endTimeMillis={questionEndTimeMillis} onComplete={onCountdownComplete} />
         )}
       </Box>
-      <QuestionWithAnswer />
+      <Box my={1} style={{ borderBottom: "1px solid gray", width: "100%" }} />
+      <Box display="flex" flexDirection="row" width="100%">
+        <Box flex={1}>
+          <QuestionWithAnswer />
+        </Box>
+        <ScoreCard />
+      </Box>
     </Box>
   )
 }
