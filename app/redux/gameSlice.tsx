@@ -28,10 +28,19 @@ export const gameSlice = createSlice({
     addQuestion: (state: GameState, action: PayloadAction<QuestionWithAnswers>) => {
       state.gameInfo.questionsWithAnswers.push(action.payload)
     },
+    setIsRoundComplete: (state: GameState, action: PayloadAction<boolean>) => {
+      state.gameInfo.isRoundComplete = action.payload
+    },
   },
 })
 
-export const { addQuestion, clearGameId, setGameId, setGameInfo, setGameInstanceId } =
-  gameSlice.actions
+export const {
+  addQuestion,
+  clearGameId,
+  setGameId,
+  setGameInfo,
+  setGameInstanceId,
+  setIsRoundComplete,
+} = gameSlice.actions
 
 export default gameSlice.reducer

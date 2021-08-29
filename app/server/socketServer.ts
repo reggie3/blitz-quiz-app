@@ -63,13 +63,29 @@ const setupWebsocketServer = (server: Server) => {
       callback(gamesInfo[gameInstanceId])
     })
 
+    socket.on(
+      "send-player-answers",
+      (gameInstanceId: string, selectedAnswers: string[], callback) => {
+        //console.log(gamesInfo[gameInstanceId])
+        callback()
+      }
+    )
+
     const sendFirstQuestion = async (gameInstanceId: string) => {
       const question = await getQuestion(gameInstanceId)
       console.log("*** sendFirstQuestion ***", question)
       console.log("*** gameInstanceId ***", gameInstanceId)
       console.log("*** question ***", question)
 
+      if (!question) return null
+
       io.to(gameInstanceId).emit("new-question", question)
+      const interval = question.endTimeMillis - Date.now()
+
+      setTimeout(() => {
+        console.log("end-round")
+        io.to(gameInstanceId).emit("end-round")
+      }, interval)
     }
   })
 }
