@@ -153,6 +153,10 @@ export const mockMultipleCorrectAnswerIds: string[] = [
 
 export const mockInitialGamesInfo: Record<string, GameInfo> = {
   "mobile-maroon-limpet-911": {
+    startedAt: 0,
+    isGameComplete: false,
+    isRoundComplete: false,
+    currentRound: 0,
     gameInstanceId: "mobile-maroon-limpet-911",
     startedById: "ckslrviil000230toi7jsfdhf",
     gameId: "ckslsamwm449330tok9aobaa5",
