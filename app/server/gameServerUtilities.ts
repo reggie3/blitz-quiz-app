@@ -106,6 +106,8 @@ export const getQuestion = async (
   if (!gameInfo) return null
 
   const { gameId, currentRound } = gameInfo
+  console.log("getQuestion currentRound", currentRound)
+
   const game = await db.game.findFirst({ where: { id: gameId } })
 
   if (!game) return null
@@ -209,10 +211,8 @@ export const onRoundFinished = (gameInstanceId: string) => {
     "gamesInfo[gameInstanceId]!.questionsWithAnswers.length",
     gamesInfo[gameInstanceId]!.questionsWithAnswers.length
   )
-  const nextRoundNumber = Math.min(
-    gamesInfo[gameInstanceId]!.questionsWithAnswers.length - 1,
-    gamesInfo[gameInstanceId]!.currentRound + 1
-  )
+  const nextRoundNumber = gamesInfo[gameInstanceId]!.currentRound + 1
+
   console.log("nextRoundNumber", nextRoundNumber)
   gamesInfo[gameInstanceId]!.currentRound = nextRoundNumber
 }
