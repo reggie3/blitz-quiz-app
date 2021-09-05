@@ -7,7 +7,13 @@ import {
   launchGame,
   getQuestion,
   handlePlayerAnswers,
+  onRoundFinished,
+  getHasNextQuestion,
+  getScoreData,
+  getCurrentRound,
 } from "./gameServerUtilities"
+
+const TIME_BETWEEN_END_OF_ROUND_AND_NEXT_ROUND = 2000
 
 const setupWebsocketServer = (server: Server) => {
   const io: socketio.Server = new socketio.Server()
@@ -30,16 +36,12 @@ const setupWebsocketServer = (server: Server) => {
       const gameInfo: Partial<GameInfo> = launchGame({ gameId, startedById, urlRoot })
       const { gameInstanceId, startTimeMillis } = gameInfo
 
-      console.log("---- emitting first question ------ gameInstanceId", gameInstanceId)
       callback(gameInfo)
 
-      //gameInstanceId && io.to(gameInstanceId).emit("first-question", "test")
-
-      // gameInstanceId && sendFirstQuestion(gameInstanceId)
       if (gameInstanceId && startTimeMillis) {
         const interval = startTimeMillis - Date.now()
         setTimeout(() => {
-          sendFirstQuestion(gameInstanceId)
+          sendQuestion(gameInstanceId)
         }, interval)
       }
     })
@@ -74,26 +76,38 @@ const setupWebsocketServer = (server: Server) => {
       (gameInstanceId: string, playerAnswerIds: string[], callback) => {
         const answerResults = handlePlayerAnswers(gameInstanceId, socket.id, playerAnswerIds)
 
-        console.log("answerResults", answerResults)
+        setTimeout(() => {
+          sendQuestion(gameInstanceId)
+        }, TIME_BETWEEN_END_OF_ROUND_AND_NEXT_ROUND)
         callback(answerResults)
       }
     )
 
-    const sendFirstQuestion = async (gameInstanceId: string) => {
-      const question = await getQuestion(gameInstanceId)
-      console.log("*** sendFirstQuestion ***", question)
-      console.log("*** gameInstanceId ***", gameInstanceId)
-      console.log("*** question ***", question)
+    const sendQuestion = async (gameInstanceId: string) => {
+      if (await getHasNextQuestion(gameInstanceId)) {
+        const res = await getQuestion(gameInstanceId)
+        if (!res) return null
+        const { newQuestionWithAnswer: question, currentRound } = res
+        // console.log("*** sendQuestion ***", question)
+        // console.log("*** gameInstanceId ***", gameInstanceId)
+        // console.log("*** question ***", question)
 
-      if (!question) return null
+        if (!question) return null
 
-      io.to(gameInstanceId).emit("new-question", question)
-      const interval = question.endTimeMillis - Date.now()
+        io.to(gameInstanceId).emit("new-question", question, currentRound)
+        const interval = question.endTimeMillis - Date.now()
 
-      setTimeout(() => {
-        console.log("end-round")
-        io.to(gameInstanceId).emit("end-round")
-      }, interval)
+        setTimeout(() => {
+          console.log("end-round")
+          onRoundFinished(gameInstanceId)
+          io.to(gameInstanceId).emit("end-round")
+        }, interval)
+      } else {
+        io.to(gameInstanceId).emit(
+          "end-game",
+          getScoreData(gameInstanceId, getCurrentRound(gameInstanceId) - 1)
+        )
+      }
     }
   })
 }

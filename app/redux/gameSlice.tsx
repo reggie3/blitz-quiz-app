@@ -28,6 +28,9 @@ export const gameSlice = createSlice({
     addQuestion: (state: GameState, action: PayloadAction<QuestionWithAnswers>) => {
       state.gameInfo.questionsWithAnswers.push(action.payload)
     },
+    setIsGameComplete: (state: GameState, action: PayloadAction<boolean>) => {
+      state.gameInfo.isGameComplete = action.payload
+    },
     setIsRoundComplete: (state: GameState, action: PayloadAction<boolean>) => {
       state.gameInfo.isRoundComplete = action.payload
     },
@@ -46,6 +49,7 @@ export const {
   setGameId,
   setGameInfo,
   setGameInstanceId,
+  setIsGameComplete,
   setIsRoundComplete,
   setGamePlayerInfo,
 } = gameSlice.actions

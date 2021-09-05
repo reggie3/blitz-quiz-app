@@ -43,9 +43,9 @@ const JoinGameModal = (props: Props) => {
   }
 
   return (
-    <MyModal isOpen={isOpen} onClickClose={closeJoinGameModal} title="Join New Game">
+    <MyModal isOpen={isOpen} onClickClose={closeJoinGameModal} title="Start Game">
       <Box>
-        <MyButton onClick={onClickJoinGame}>Join Game</MyButton>
+        <MyButton onClick={onClickJoinGame}>Start</MyButton>
       </Box>
     </MyModal>
   )

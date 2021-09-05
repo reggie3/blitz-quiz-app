@@ -1,5 +1,5 @@
-import db, { Question } from "db"
-import { GameInfo, GamePlayerInfo, QuestionWithAnswers } from "myTypes"
+import db from "db"
+import { FinalScores, GameInfo, GamePlayerInfo, QuestionWithAnswers } from "myTypes"
 import randomColor from "random-color"
 import {
   uniqueNamesGenerator,
@@ -9,12 +9,10 @@ import {
   animals,
   NumberDictionary,
 } from "unique-names-generator"
-import { xor } from "lodash"
+import { getIsPlayerCorrect } from "./getIsPlayerCorrect"
 
-const GAME_WAIT_TIME = 10000
+const GAME_LOBBY_WAIT_TIME = 15000
 const QUESTION_WAIT_TIME = 5000
-
-// const GAME_WAIT_TIME = 10000
 
 export const gamesInfo: Record<string, GameInfo> = {}
 
@@ -39,7 +37,7 @@ export const launchGame = ({
 }): Partial<GameInfo> => {
   const gameInstanceId = getGameInstanceId()
   const joinUrl = urlRoot + "play-game/" + gameInstanceId
-  const startTimeMillis = Date.now() + GAME_WAIT_TIME
+  const startTimeMillis = Date.now() + GAME_LOBBY_WAIT_TIME
   const gameInfo = {
     gameInstanceId,
     startedById: startedById,
@@ -48,6 +46,7 @@ export const launchGame = ({
     startTimeMillis,
     questionsWithAnswers: [] as QuestionWithAnswers[],
     scoreMultiplier: 1,
+    currentRound: 0,
   } as GameInfo
 
   gamesInfo[gameInstanceId] = gameInfo
@@ -100,17 +99,19 @@ export const addUserToGame = ({
   return newGamePlayerInfo
 }
 
-export const getQuestion = async (gameInstanceId: string): Promise<QuestionWithAnswers | null> => {
+export const getQuestion = async (
+  gameInstanceId: string
+): Promise<{ newQuestionWithAnswer: QuestionWithAnswers; currentRound: number } | null> => {
   const gameInfo = gamesInfo[gameInstanceId]
   if (!gameInfo) return null
 
-  const { gameId } = gameInfo
+  const { gameId, currentRound } = gameInfo
   const game = await db.game.findFirst({ where: { id: gameId } })
 
   if (!game) return null
   const { questionIds } = game
-  const currentQuestionId =
-    questionIds[gamesInfo[gameInstanceId]?.questionsWithAnswers?.length ?? 0]
+
+  const currentQuestionId = questionIds[currentRound]
 
   const question = await db.question.findFirst({ where: { id: currentQuestionId } })
 
@@ -130,11 +131,12 @@ export const getQuestion = async (gameInstanceId: string): Promise<QuestionWithA
     answers: answersWithoutCorrectAnswer,
     endTimeMillis: Date.now() + QUESTION_WAIT_TIME,
   }
+
   gamesInfo[gameInstanceId]?.questionsWithAnswers.push(newQuestionWithAnswer)
   // console.log("+++++++++++++++++++++++++++")
   // console.log(gamesInfo[gameInstanceId]!.questionInfo)
 
-  return newQuestionWithAnswer
+  return { newQuestionWithAnswer, currentRound }
 }
 
 export const handlePlayerAnswers = (
@@ -142,24 +144,16 @@ export const handlePlayerAnswers = (
   playerId: string,
   playerAnswerIds: string[]
 ) => {
-  console.log("here 1")
-  console.log("gameInstanceId", gameInstanceId)
-  console.log("gamesInfo", gamesInfo)
-
   if (!gamesInfo[gameInstanceId]) return null
-
-  console.log("here 1.1")
 
   const gameInfo = gamesInfo[gameInstanceId]!
   const currentQuestionNumber = gameInfo.questionsWithAnswers.length - 1
   const currentQuestion = gameInfo.questionsWithAnswers[currentQuestionNumber]
 
   if (!currentQuestion) return null
-  console.log("here 2")
 
-  // the player is correct if there are no id differences in their answer and the answers to the question
-  const currentQuestionAnswerIds = currentQuestion.answers.map((answer) => answer.id)
-  const isPlayerCorrect = !xor(playerAnswerIds, currentQuestionAnswerIds).length
+  const isPlayerCorrect = getIsPlayerCorrect(currentQuestion, playerAnswerIds)
+  console.log("isPlayerCorrect", isPlayerCorrect)
 
   const currentScore = isPlayerCorrect ? 1 * gameInfo.scoreMultiplier : 0
   const newCumulativeScore =
@@ -167,10 +161,58 @@ export const handlePlayerAnswers = (
     (gamesInfo[gameInstanceId]?.gamePlayers[playerId]?.roundResults[currentQuestionNumber]
       ?.cumulativeScore ?? 0)
   const roundResult = { score: currentScore, cumulativeScore: newCumulativeScore }
+  console.log("roundResult", roundResult)
 
   gamesInfo[gameInstanceId]?.gamePlayers[playerId]?.roundResults.push(roundResult)
 
-  console.log("here end")
-
   return gamesInfo[gameInstanceId]?.gamePlayers
+}
+
+export const getHasNextQuestion = async (gameInstanceId: string): Promise<boolean> => {
+  const gameInfo = gamesInfo[gameInstanceId]
+  if (!gameInfo) return false
+
+  const { gameId, currentRound } = gameInfo
+  const game = await db.game.findFirst({ where: { id: gameId } })
+
+  if (!game) return false
+  const { questionIds } = game
+
+  return Boolean(questionIds[currentRound])
+}
+
+export const getScoreData = (gameInstanceId: string, round: number): FinalScores => {
+  const gameInfo = gamesInfo[gameInstanceId]
+  if (!gameInfo) return {}
+
+  const scoreInfo: Record<string, number> = {}
+  //console.log("111******** gameInfo.gamePlayers, round", gameInfo.gamePlayers, round)
+
+  Object.keys(gameInfo.gamePlayers).forEach((playerId: string) => {
+    scoreInfo[playerId] = gameInfo.gamePlayers[playerId]?.roundResults[round]?.cumulativeScore ?? 0
+  })
+  console.log("scoreInfo", scoreInfo)
+  return scoreInfo
+}
+
+export const getCurrentRound = (gameInstanceId: string): number => {
+  const gameInfo = gamesInfo[gameInstanceId]
+  if (!gameInfo) return 0
+
+  return gamesInfo[gameInstanceId]!.currentRound
+}
+
+export const onRoundFinished = (gameInstanceId: string) => {
+  if (!gamesInfo[gameInstanceId]) return null
+
+  console.log(
+    "gamesInfo[gameInstanceId]!.questionsWithAnswers.length",
+    gamesInfo[gameInstanceId]!.questionsWithAnswers.length
+  )
+  const nextRoundNumber = Math.min(
+    gamesInfo[gameInstanceId]!.questionsWithAnswers.length - 1,
+    gamesInfo[gameInstanceId]!.currentRound + 1
+  )
+  console.log("nextRoundNumber", nextRoundNumber)
+  gamesInfo[gameInstanceId]!.currentRound = nextRoundNumber
 }

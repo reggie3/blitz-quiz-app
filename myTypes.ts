@@ -26,6 +26,10 @@ export interface GameInfo {
   gamePlayers: Record<string, GamePlayerInfo>
   startTimeMillis: number
   questionsWithAnswers: QuestionWithAnswers[]
+  isGameComplete: boolean
   isRoundComplete: boolean
   scoreMultiplier: number
+  currentRound: number
 }
+
+export type FinalScores = Record<string, number>

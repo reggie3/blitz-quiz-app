@@ -47,6 +47,7 @@ const AnswerView = ({ answers }: Props) => {
           }
         }
       )
+      setSelectedAnswers([])
     }
     // only run based on value of isRoundComplete
     // eslint-disable-next-line react-hooks/exhaustive-deps
