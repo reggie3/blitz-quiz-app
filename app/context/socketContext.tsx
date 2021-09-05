@@ -3,6 +3,7 @@ import {
   setIsRoundComplete,
   setGameInfo,
   setIsGameComplete,
+  setCurrentRound,
 } from "app/redux/gameSlice"
 import { useSession } from "blitz"
 import { GameInfo, QuestionWithAnswers } from "myTypes"
@@ -57,6 +58,7 @@ const SocketProvider = ({ children }) => {
 
           dispatch(setIsRoundComplete(false))
           dispatch(addQuestion(questionWithAnswers))
+          dispatch(setCurrentRound(currentRound))
         }
       )
 

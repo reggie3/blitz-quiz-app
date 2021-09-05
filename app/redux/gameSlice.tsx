@@ -40,6 +40,9 @@ export const gameSlice = createSlice({
     ) => {
       state.gameInfo.gamePlayers = action.payload
     },
+    setCurrentRound: (state: GameState, action: PayloadAction<number>) => {
+      state.gameInfo.currentRound = action.payload
+    },
   },
 })
 
@@ -52,6 +55,7 @@ export const {
   setIsGameComplete,
   setIsRoundComplete,
   setGamePlayerInfo,
+  setCurrentRound,
 } = gameSlice.actions
 
 export default gameSlice.reducer

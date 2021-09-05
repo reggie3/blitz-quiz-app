@@ -3,6 +3,7 @@ import { RootState } from "app/redux/store"
 import React from "react"
 import { useSelector } from "react-redux"
 import CountdownTimer from "../CountdownTimer/CountdownTimer"
+import CurrentRoundBadge from "../CurrentRoundBadge/CurrentRoundBadge"
 import QuestionWithAnswer from "../QuestionWithAnswer/QuestionWithAnswer"
 import ScoreCard from "../ScoreCard/ScoreCard"
 
@@ -26,7 +27,15 @@ const PlayGame = () => {
       data-testid="play-game-root-container"
       padding={1}
     >
-      <Box my={2} data-testid="play-game-countdown-timer-container">
+      <Box
+        display="flex"
+        flexDirection="row"
+        justifyContent="space-between"
+        my={2}
+        border="1px dashed green"
+        width="100%"
+      >
+        <CurrentRoundBadge />
         {questionEndTimeMillis && (
           <CountdownTimer endTimeMillis={questionEndTimeMillis} onComplete={onCountdownComplete} />
         )}
