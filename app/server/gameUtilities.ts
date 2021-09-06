@@ -71,7 +71,7 @@ export const addUserToGame = ({
     gamesInfo[gameInstanceId] = {
       ...gamesInfo[gameInstanceId],
       gamePlayers: {
-        ...gamesInfo[gameInstanceId].gamePlayers,
+        ...gamesInfo[gameInstanceId]!.gamePlayers,
         [playerId]: newGamePlayerInfo,
       },
     } as GameInfo

@@ -16,7 +16,11 @@ const JoinGamePage: BlitzPage = () => {
       <div>
         <Suspense fallback={<div>Loading...</div>}>
           <SocketProvider>
-            <GameLobby gameInstanceToJoin={gameInstanceId} />
+            {gameInstanceId && (
+              <GameLobby
+                gameInstanceId={Array.isArray(gameInstanceId) ? gameInstanceId[0] : gameInstanceId}
+              />
+            )}
           </SocketProvider>
         </Suspense>
       </div>
