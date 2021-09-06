@@ -106,7 +106,6 @@ export const getQuestion = async (
   if (!gameInfo) return null
 
   const { gameId, currentRound } = gameInfo
-  console.log("getQuestion currentRound", currentRound)
 
   const game = await db.game.findFirst({ where: { id: gameId } })
 
@@ -155,7 +154,6 @@ export const handlePlayerAnswers = (
   if (!currentQuestion) return null
 
   const isPlayerCorrect = getIsPlayerCorrect(currentQuestion, playerAnswerIds)
-  console.log("isPlayerCorrect", isPlayerCorrect)
 
   const currentScore = isPlayerCorrect ? 1 * gameInfo.scoreMultiplier : 0
   const newCumulativeScore =
@@ -163,7 +161,6 @@ export const handlePlayerAnswers = (
     (gamesInfo[gameInstanceId]?.gamePlayers[playerId]?.roundResults[currentQuestionNumber]
       ?.cumulativeScore ?? 0)
   const roundResult = { score: currentScore, cumulativeScore: newCumulativeScore }
-  console.log("roundResult", roundResult)
 
   gamesInfo[gameInstanceId]?.gamePlayers[playerId]?.roundResults.push(roundResult)
 
@@ -191,9 +188,10 @@ export const getScoreData = (gameInstanceId: string, round: number): FinalScores
   //console.log("111******** gameInfo.gamePlayers, round", gameInfo.gamePlayers, round)
 
   Object.keys(gameInfo.gamePlayers).forEach((playerId: string) => {
+    console.log(JSON.stringify(gameInfo.gamePlayers[playerId]))
     scoreInfo[playerId] = gameInfo.gamePlayers[playerId]?.roundResults[round]?.cumulativeScore ?? 0
   })
-  console.log("scoreInfo", scoreInfo)
+
   return scoreInfo
 }
 
@@ -207,12 +205,7 @@ export const getCurrentRound = (gameInstanceId: string): number => {
 export const onRoundFinished = (gameInstanceId: string) => {
   if (!gamesInfo[gameInstanceId]) return null
 
-  console.log(
-    "gamesInfo[gameInstanceId]!.questionsWithAnswers.length",
-    gamesInfo[gameInstanceId]!.questionsWithAnswers.length
-  )
   const nextRoundNumber = gamesInfo[gameInstanceId]!.currentRound + 1
 
-  console.log("nextRoundNumber", nextRoundNumber)
   gamesInfo[gameInstanceId]!.currentRound = nextRoundNumber
 }
