@@ -7,6 +7,7 @@ import updateGame from "app/games/mutations/updateGame"
 import { GameForm, FORM_ERROR } from "app/games/components/GameForm"
 import { UpdateGame } from "app/validations"
 import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
+import { Game } from "db"
 
 export const EditGame = () => {
   const [shouldShowSaveSuccess, setShouldShowSaveSuccess] = useState<boolean>(false)
@@ -51,6 +52,7 @@ export const EditGame = () => {
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
           //         then import and use it here
           schema={UpdateGame}
+          // @ts-ignore
           initialValues={game}
           onSubmit={async (values) => {
             try {

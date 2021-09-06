@@ -1,9 +1,14 @@
 import { Answer, Question } from "db"
 
+export interface RoundResult {
+  score: number
+  cumulativeScore: number
+}
 export interface GamePlayerInfo {
   playerColor: string
   playerId: string
   playerName: string
+  roundResults: RoundResult[]
 }
 
 export interface QuestionWithAnswers {
@@ -21,5 +26,10 @@ export interface GameInfo {
   gamePlayers: Record<string, GamePlayerInfo>
   startTimeMillis: number
   questionsWithAnswers: QuestionWithAnswers[]
+  isGameComplete: boolean
   isRoundComplete: boolean
+  scoreMultiplier: number
+  currentRound: number
 }
+
+export type FinalScores = Record<string, number>

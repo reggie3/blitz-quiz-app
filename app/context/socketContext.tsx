@@ -1,4 +1,10 @@
-import { addQuestion, setIsRoundComplete, setGameInfo } from "app/redux/gameSlice"
+import {
+  addQuestion,
+  setIsRoundComplete,
+  setGameInfo,
+  setIsGameComplete,
+  setCurrentRound,
+} from "app/redux/gameSlice"
 import { useSession } from "blitz"
 import { GameInfo, QuestionWithAnswers } from "myTypes"
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
@@ -44,15 +50,23 @@ const SocketProvider = ({ children }) => {
         dispatch(setGameInfo(gameInfo))
       })
 
-      socket.current.on("new-question", (questionWithAnswers: QuestionWithAnswers) => {
-        console.log("new-question", questionWithAnswers)
-        console.log(JSON.stringify(questionWithAnswers))
-        dispatch(setIsRoundComplete(false))
-        dispatch(addQuestion(questionWithAnswers))
-      })
+      socket.current.on(
+        "new-question",
+        (questionWithAnswers: QuestionWithAnswers, currentRound: number) => {
+          console.log("new-question", questionWithAnswers)
+          console.log("currentRound", currentRound)
+
+          dispatch(setIsRoundComplete(false))
+          dispatch(addQuestion(questionWithAnswers))
+          dispatch(setCurrentRound(currentRound))
+        }
+      )
 
       socket.current.on("end-round", () => {
         dispatch(setIsRoundComplete(true))
+      })
+      socket.current.on("end-game", () => {
+        dispatch(setIsGameComplete(true))
       })
     }
   }, [dispatch])

@@ -23,7 +23,7 @@ export const AnswersList = () => {
         {answers.map((answer) => (
           <li key={answer.id}>
             <Link href={Routes.ShowAnswerPage({ answerId: answer.id })}>
-              <a>{answer.name}</a>
+              <a>{answer.text}</a>
             </Link>
           </li>
         ))}
