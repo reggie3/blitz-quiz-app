@@ -20,11 +20,6 @@ const PlayGame = () => {
     // TODO: show some sort of indication that the countdown is complete
   }
 
-  console.log(
-    "questionEndTimeMillis question",
-    gameInfo.questionsWithAnswers.length,
-    questionEndTimeMillis
-  )
   if (finalScores) return null
 
   return (

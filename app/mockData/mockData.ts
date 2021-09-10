@@ -172,10 +172,11 @@ export const mockInitialGamesInfo: Record<string, GameInfo> = {
         roundResults: [],
       },
     },
+    finalScores: {},
   },
 }
 export const mockGamesInfo: Record<string, GameInfo> = {
-  "mobile-maroon-limpet-911": {
+  "tacit-blue-weasel-333": {
     startedAt: 0,
     isGameComplete: false,
     isRoundComplete: false,
@@ -241,5 +242,6 @@ export const mockGamesInfo: Record<string, GameInfo> = {
         roundResults: [{ score: 1, cumulativeScore: 1 }],
       },
     },
+    finalScores: { "82IwGnEWFMz9HdovAAAH": 2 },
   },
 }
