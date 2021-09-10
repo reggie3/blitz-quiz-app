@@ -30,6 +30,7 @@ export interface GameInfo {
   isRoundComplete: boolean
   scoreMultiplier: number
   currentRound: number
+  finalScores: FinalScores
 }
 
 export type FinalScores = Record<string, number>

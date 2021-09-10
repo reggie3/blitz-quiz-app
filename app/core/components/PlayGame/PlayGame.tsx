@@ -9,6 +9,8 @@ import ScoreCard from "../ScoreCard/ScoreCard"
 
 const PlayGame = () => {
   const { gameInfo } = useSelector((state: RootState) => state.game)
+  const { finalScores } = useSelector((state: RootState) => state.game.gameInfo)
+
   const theme = useTheme()
 
   const questionEndTimeMillis =
@@ -17,6 +19,8 @@ const PlayGame = () => {
   const onCountdownComplete = () => {
     // TODO: show some sort of indication that the countdown is complete
   }
+
+  if (finalScores) return null
 
   return (
     <Box
