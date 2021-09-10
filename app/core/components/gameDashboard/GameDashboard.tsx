@@ -5,6 +5,7 @@ import { RootState } from "app/redux/store"
 import { DashboardViews } from "app/redux/uiSlice"
 import React, { Suspense } from "react"
 import { useSelector } from "react-redux"
+import GameOver from "../GameOver/GameOver"
 import GameLobby from "../JoinGame/GameLobby"
 import PlayGame from "../PlayGame/PlayGame"
 import DashboardHeader from "./DashboardHeader"
@@ -32,6 +33,7 @@ const GameDashboard = () => {
     return (
       <div data-testid="game-dashboard-play-game-container">
         <PlayGame />
+        <GameOver />
       </div>
     )
   }

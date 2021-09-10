@@ -22,7 +22,7 @@ const CountdownTimer = ({ endTimeMillis, onComplete }: Props) => {
     return () => clearInterval(interval)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [endTimeMillis])
 
   useEffect(() => {
     if (seconds === 0 && minutes === 0) {

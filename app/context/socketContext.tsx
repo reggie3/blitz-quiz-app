@@ -6,7 +6,7 @@ import {
   setCurrentRound,
 } from "app/redux/gameSlice"
 import { useSession } from "blitz"
-import { GameInfo, QuestionWithAnswers } from "myTypes"
+import { FinalScores, GameInfo, QuestionWithAnswers } from "myTypes"
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Socket } from "socket.io-client"
@@ -65,8 +65,8 @@ const SocketProvider = ({ children }) => {
       socket.current.on("end-round", () => {
         dispatch(setIsRoundComplete(true))
       })
-      socket.current.on("end-game", () => {
-        dispatch(setIsGameComplete(true))
+      socket.current.on("end-game", (finalScores: FinalScores) => {
+        dispatch(setIsGameComplete(finalScores))
       })
     }
   }, [dispatch])
