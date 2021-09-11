@@ -7,8 +7,9 @@ import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked"
 import { RootState } from "app/redux/store"
 import { useDispatch, useSelector } from "react-redux"
 import { useSocket } from "app/context/socketContext"
-import { setGameInfo, setGamePlayerInfo } from "app/redux/gameSlice"
+import { setGamePlayerInfo } from "app/redux/gameSlice"
 import { GamePlayerInfo } from "myTypes"
+import { useUpdateEffect } from "react-use"
 
 const StartIcon = ({
   answerId,
@@ -24,9 +25,10 @@ const StartIcon = ({
 }
 interface Props {
   answers?: Answer[]
+  questionId?: string
 }
 
-const AnswerView = ({ answers }: Props) => {
+const AnswerView = ({ answers, questionId }: Props) => {
   const { isRoundComplete, gameInstanceId } = useSelector((state: RootState) => state.game.gameInfo)
   const { answerGrid, toggleButton, toggleButtonGroup } = useStyles()
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([])
@@ -46,11 +48,14 @@ const AnswerView = ({ answers }: Props) => {
           }
         }
       )
-      setSelectedAnswers([])
     }
     // only run based on value of isRoundComplete
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRoundComplete])
+
+  useUpdateEffect(() => {
+    setSelectedAnswers([])
+  }, [questionId])
 
   const onClickAnswer = (answerId: string) => {
     if (selectedAnswers.includes(answerId)) {

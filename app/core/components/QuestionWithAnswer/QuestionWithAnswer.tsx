@@ -15,7 +15,10 @@ const QuestionWithAnswer = (props: Props) => {
   return (
     <Box width="100%" data-testid="question-with-answer-root-container">
       <QuestionView question={questionToDisplay?.question} />
-      <AnswerView answers={questionToDisplay?.answers} />
+      <AnswerView
+        answers={questionToDisplay?.answers}
+        questionId={questionToDisplay?.question.id}
+      />
     </Box>
   )
 }
