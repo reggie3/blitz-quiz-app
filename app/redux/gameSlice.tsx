@@ -16,6 +16,9 @@ export const gameSlice = createSlice({
     clearGameId: (state: GameState) => {
       state.gameInfo.gameId = ""
     },
+    clearGameState: () => {
+      return initialState
+    },
     setGameId: (state: GameState, action: PayloadAction<string>) => {
       state.gameInfo.gameId = action.payload
     },
@@ -49,6 +52,7 @@ export const gameSlice = createSlice({
 export const {
   addQuestion,
   clearGameId,
+  clearGameState,
   setGameId,
   setGameInfo,
   setGameInstanceId,
