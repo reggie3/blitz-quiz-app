@@ -71,7 +71,6 @@ const GameLobby = ({ gameInstanceId }: GameLobbyProps) => {
   }
 
   const onCountdownComplete = () => {
-    console.log("onCountdownComplete ***")
     dispatch(setDashboardView(DashboardViews.PLAY_GAME))
     dispatch(setGamePlayView(GamePlayViews.PLAY_GAME))
   }
