@@ -28,7 +28,6 @@ const MyGamesList = (props: Props) => {
   }
 
   const onClickNewGame = () => {
-    console.log("on click new game pressed")
     router.push(Routes.NewGamePage())
   }
 

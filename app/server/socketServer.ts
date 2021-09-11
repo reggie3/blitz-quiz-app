@@ -12,8 +12,7 @@ import {
   getScoreData,
   getCurrentRound,
 } from "./gameServerUtilities"
-
-const TIME_BETWEEN_END_OF_ROUND_AND_NEXT_ROUND = 2000
+import { TIME_BETWEEN_END_OF_ROUND_AND_NEXT_ROUND } from "./gameServerConfig"
 
 const setupWebsocketServer = (server: Server) => {
   const io: socketio.Server = new socketio.Server()
@@ -29,7 +28,7 @@ const setupWebsocketServer = (server: Server) => {
     })
 
     socket.onAny((event, ...args) => {
-      console.log(event, args)
+      // console.log(event, args)
     })
 
     socket.on("launch-game", (gameId: string, startedById: string, urlRoot: string, callback) => {
@@ -67,7 +66,6 @@ const setupWebsocketServer = (server: Server) => {
     })
 
     socket.on("get-game-info", (gameInstanceId: string, callback) => {
-      console.log(gamesInfo[gameInstanceId])
       callback(gamesInfo[gameInstanceId])
     })
 
@@ -98,7 +96,6 @@ const setupWebsocketServer = (server: Server) => {
         const interval = question.endTimeMillis - Date.now()
 
         setTimeout(() => {
-          console.log("end-round")
           onRoundFinished(gameInstanceId)
           io.to(gameInstanceId).emit("end-round")
         }, interval)

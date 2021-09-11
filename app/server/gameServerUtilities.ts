@@ -1,5 +1,5 @@
 import db from "db"
-import { FinalScores, GameInfo, GamePlayerInfo, QuestionWithAnswers } from "myTypes"
+import { FinalScores, GameInfo, GamePlayerInfo, QuestionWithAnswers, RoundResult } from "myTypes"
 import randomColor from "random-color"
 import {
   uniqueNamesGenerator,
@@ -9,10 +9,9 @@ import {
   animals,
   NumberDictionary,
 } from "unique-names-generator"
+import { GAME_LOBBY_WAIT_TIME, QUESTION_WAIT_TIME } from "./gameServerConfig"
 import { getIsPlayerCorrect } from "./getIsPlayerCorrect"
-
-const GAME_LOBBY_WAIT_TIME = 15000
-const QUESTION_WAIT_TIME = 5000
+import { getRoundResults } from "./getRoundResults"
 
 export const gamesInfo: Record<string, GameInfo> = {}
 
@@ -134,8 +133,6 @@ export const getQuestion = async (
   }
 
   gamesInfo[gameInstanceId]?.questionsWithAnswers.push(newQuestionWithAnswer)
-  // console.log("+++++++++++++++++++++++++++")
-  // console.log(gamesInfo[gameInstanceId]!.questionInfo)
 
   return { newQuestionWithAnswer, currentRound }
 }
@@ -148,6 +145,7 @@ export const handlePlayerAnswers = (
   if (!gamesInfo[gameInstanceId]) return null
 
   const gameInfo = gamesInfo[gameInstanceId]!
+
   const currentQuestionNumber = gameInfo.questionsWithAnswers.length - 1
   const currentQuestion = gameInfo.questionsWithAnswers[currentQuestionNumber]
 
@@ -155,16 +153,11 @@ export const handlePlayerAnswers = (
 
   const isPlayerCorrect = getIsPlayerCorrect(currentQuestion, playerAnswerIds)
 
-  const currentScore = isPlayerCorrect ? 1 * gameInfo.scoreMultiplier : 0
-  const newCumulativeScore =
-    currentScore +
-    (gamesInfo[gameInstanceId]?.gamePlayers[playerId]?.roundResults[currentQuestionNumber]
-      ?.cumulativeScore ?? 0)
-  const roundResult = { score: currentScore, cumulativeScore: newCumulativeScore }
+  const newRoundResults = getRoundResults(isPlayerCorrect, gameInfo.gamePlayers[playerId])
 
-  gamesInfo[gameInstanceId]?.gamePlayers[playerId]?.roundResults.push(roundResult)
+  gamesInfo[gameInstanceId]!.gamePlayers[playerId]!.roundResults = newRoundResults
 
-  return gamesInfo[gameInstanceId]?.gamePlayers
+  return gamesInfo[gameInstanceId]!.gamePlayers
 }
 
 export const getHasNextQuestion = async (gameInstanceId: string): Promise<boolean> => {
@@ -185,10 +178,8 @@ export const getScoreData = (gameInstanceId: string, round: number): FinalScores
   if (!gameInfo) return {}
 
   const scoreInfo: Record<string, number> = {}
-  //console.log("111******** gameInfo.gamePlayers, round", gameInfo.gamePlayers, round)
 
   Object.keys(gameInfo.gamePlayers).forEach((playerId: string) => {
-    console.log(JSON.stringify(gameInfo.gamePlayers[playerId]))
     scoreInfo[playerId] = gameInfo.gamePlayers[playerId]?.roundResults[round]?.cumulativeScore ?? 0
   })
 

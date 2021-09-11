@@ -16,7 +16,6 @@ import MyQuestionsList from "./MyQuestionsList"
 const GameDashboard = () => {
   const currentUser = useCurrentUser()
   const { dashboardView } = useSelector((state: RootState) => state.ui)
-  const { gameInstanceId } = useSelector((state: RootState) => state.game.gameInfo)
 
   if (!currentUser) {
     return null
@@ -29,6 +28,7 @@ const GameDashboard = () => {
       </div>
     )
   }
+
   if (dashboardView === DashboardViews.PLAY_GAME) {
     return (
       <div data-testid="game-dashboard-play-game-container">

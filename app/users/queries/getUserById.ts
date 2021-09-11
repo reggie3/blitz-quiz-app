@@ -5,7 +5,6 @@ export default async function getUserById({
 }: {
   userId: string | null
 }): Promise<Partial<User> | null> {
-  console.log("userId", userId)
   if (!userId) return null
 
   const user = await db.user.findFirst({

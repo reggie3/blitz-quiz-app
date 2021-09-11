@@ -41,7 +41,6 @@ const AnswerView = ({ answers }: Props) => {
         gameInstanceId,
         selectedAnswers,
         (response: Record<string, GamePlayerInfo> | null) => {
-          console.log("response to send-player-answers received", response)
           if (response) {
             dispatch(setGamePlayerInfo(response))
           }
