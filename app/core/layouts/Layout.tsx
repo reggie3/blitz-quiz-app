@@ -2,7 +2,7 @@ import React, { ReactNode } from "react"
 import { Head } from "blitz"
 import MyAppbar from "../components/MyAppbar"
 import CssBaseline from "@material-ui/core/CssBaseline"
-import { Box, makeStyles } from "@material-ui/core"
+import { Box, makeStyles, Paper } from "@material-ui/core"
 
 type LayoutProps = {
   title?: string
@@ -12,18 +12,18 @@ type LayoutProps = {
 const Layout = ({ title, children }: LayoutProps) => {
   const { rootContainer, content, contentContainer, sideBars } = useStyles()
   return (
-    <div className={rootContainer} data-testid="root-container">
+    <div className={rootContainer} data-testid="layout-root-container">
       <CssBaseline />
       <Head>
         <title>{title || "blitz-quiz-app"}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MyAppbar />
-      <Box data-testid="content-container" className={contentContainer}>
+      <Box data-testid="layout-content-container" className={contentContainer}>
         <div className={sideBars} />
-        <Box data-testid="content" className={content} maxWidth="600" padding={2}>
+        <Paper data-testid="layout-content" className={content}>
           {children}
-        </Box>
+        </Paper>
         <div className={sideBars} />
       </Box>
     </div>
@@ -32,7 +32,7 @@ const Layout = ({ title, children }: LayoutProps) => {
 
 export default Layout
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   rootContainer: {
     backgroundColor: "whitesmoke",
     height: "100vh",
@@ -44,6 +44,7 @@ const useStyles = makeStyles({
     width: "80%",
     maxWidth: "800px",
     minWidth: "600px",
+    padding: theme.spacing(2),
   },
   contentContainer: {
     display: "flex",
@@ -52,4 +53,4 @@ const useStyles = makeStyles({
   sideBars: {
     minWidth: 0,
   },
-})
+}))
