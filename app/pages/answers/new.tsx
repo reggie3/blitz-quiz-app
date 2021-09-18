@@ -4,6 +4,7 @@ import createAnswer from "app/answers/mutations/createAnswer"
 import { AnswerForm, FORM_ERROR } from "app/answers/components/AnswerForm"
 import { CreateAnswer } from "app/validations"
 import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
+import { Box } from "@material-ui/core"
 
 const NewAnswerPage: BlitzPage = () => {
   const router = useRouter()
@@ -22,6 +23,7 @@ const NewAnswerPage: BlitzPage = () => {
         schema={CreateAnswer}
         // initialValues={{}}
         onSubmit={async (values) => {
+          debugger
           try {
             const answer = await createAnswerMutation(values)
             router.push(Routes.Home())
@@ -34,9 +36,9 @@ const NewAnswerPage: BlitzPage = () => {
         }}
       />
 
-      <p>
+      <Box my={1}>
         <MyClickableLink onClick={() => router.push("/")}>Answers</MyClickableLink>
-      </p>
+      </Box>
     </div>
   )
 }

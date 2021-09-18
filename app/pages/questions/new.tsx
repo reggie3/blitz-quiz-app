@@ -4,6 +4,7 @@ import createQuestion from "app/questions/mutations/createQuestion"
 import { QuestionForm, FORM_ERROR } from "app/questions/components/QuestionForm"
 import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
 import { CreateQuestion } from "app/validations"
+import { Box } from "@material-ui/core"
 
 const NewQuestionPage: BlitzPage = () => {
   const router = useRouter()
@@ -33,9 +34,9 @@ const NewQuestionPage: BlitzPage = () => {
         }}
       />
 
-      <p>
+      <Box my={1}>
         <MyClickableLink onClick={() => router.push("/")}>Questions</MyClickableLink>
-      </p>
+      </Box>
     </div>
   )
 }
