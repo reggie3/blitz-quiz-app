@@ -4,6 +4,7 @@ import createAnswer from "app/answers/mutations/createAnswer"
 import { AnswerForm, FORM_ERROR } from "app/answers/components/AnswerForm"
 import { CreateAnswer } from "app/validations"
 import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
+import { Box } from "@material-ui/core"
 
 const NewAnswerPage: BlitzPage = () => {
   const router = useRouter()
@@ -18,9 +19,8 @@ const NewAnswerPage: BlitzPage = () => {
         // TODO use a zod schema for form validation
         //  - Tip: extract mutation's schema into a shared `validations.ts` file and
         //         then import and use it here
-        // @ts-ignore
         schema={CreateAnswer}
-        // initialValues={{}}
+        initialValues={{}}
         onSubmit={async (values) => {
           try {
             const answer = await createAnswerMutation(values)
@@ -34,9 +34,9 @@ const NewAnswerPage: BlitzPage = () => {
         }}
       />
 
-      <p>
+      <Box my={1}>
         <MyClickableLink onClick={() => router.push("/")}>Answers</MyClickableLink>
-      </p>
+      </Box>
     </div>
   )
 }

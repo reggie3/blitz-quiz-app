@@ -10,7 +10,7 @@ import {
   mockMultipleCorrectAnswerIds,
   mockQuestionWithAnswers1,
   mockQuestionWithMultipleCorrectAnswers,
-} from "app/mockData/mockData"
+} from "test/mockData/mockData"
 import { getIsPlayerCorrect } from "./getIsPlayerCorrect"
 
 export {}

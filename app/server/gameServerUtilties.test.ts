@@ -1,4 +1,4 @@
-import { mock1RoundResult, mock3RoundResults, mockGamesInfo } from "app/mockData/mockData"
+import { mock1RoundResult, mock3RoundResults, mockGamesInfo } from "test/mockData/mockData"
 import { GamePlayerInfo, RoundResult } from "myTypes"
 import { getRoundResults } from "./getRoundResults"
 
@@ -17,7 +17,6 @@ describe("getRoundResults tests", () => {
     const res = getRoundResults(false, GAME_PLAYER_INFO)
 
     expect(res).toEqual([...mock1RoundResult, { ...mock1RoundResult[0], score: 0 }])
-    console.log(res)
   })
 
   it("should add a round result with if the player answers correctly", () => {

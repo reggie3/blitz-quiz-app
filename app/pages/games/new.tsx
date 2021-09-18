@@ -4,6 +4,7 @@ import createGame from "app/games/mutations/createGame"
 import { GameForm, FORM_ERROR } from "app/games/components/GameForm"
 import MyClickableLink from "app/core/components/myComponents/MyClickableLink"
 import { CreateGame } from "app/validations"
+import { Box } from "@material-ui/core"
 
 const NewGamePage: BlitzPage = () => {
   const router = useRouter()
@@ -33,9 +34,9 @@ const NewGamePage: BlitzPage = () => {
         }}
       />
 
-      <p>
+      <Box my={1}>
         <MyClickableLink onClick={() => router.push("/")}>Games</MyClickableLink>
-      </p>
+      </Box>
     </div>
   )
 }

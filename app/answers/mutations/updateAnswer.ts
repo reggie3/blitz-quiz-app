@@ -2,7 +2,7 @@ import { resolver } from "blitz"
 import db from "db"
 import { z } from "zod"
 
-const UpdateAnswer = z.object({
+export const UpdateAnswer = z.object({
   id: z.string(),
   text: z.string().optional(),
   questionIds: z.string().array().optional(),
