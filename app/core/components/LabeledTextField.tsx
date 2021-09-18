@@ -1,6 +1,7 @@
 import { TextField, StandardTextFieldProps } from "@material-ui/core"
-import React, { forwardRef, PropsWithoutRef, useRef } from "react"
+import React, { forwardRef, PropsWithoutRef, useEffect, useRef, useState } from "react"
 import { useField } from "react-final-form"
+import getSanitizedString from "app/utils/getSanitizedString"
 
 export interface LabeledTextFieldProps extends StandardTextFieldProps {
   /** Field name. */
@@ -15,17 +16,19 @@ export interface LabeledTextFieldProps extends StandardTextFieldProps {
 }
 
 export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
-  ({ name, label, outerProps, ...props }, ref) => {
+  ({ name, label, placeholder, outerProps, ...props }, ref) => {
     const {
       input,
       meta: { touched, error, submitError, submitting },
     } = useField(name, {
       parse: props.type === "number" ? Number : undefined,
     })
-    const testId = useRef('labeled-text-field' + testId ?? props.n)
-    const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
 
-    console.log("normalizedError", normalizedError)
+    const testId = useRef<string>(
+      getSanitizedString("labeled-text-field-" + (props.testId || label || placeholder || name))
+    )
+
+    const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
 
     return (
       <TextField
@@ -37,7 +40,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
         variant="standard"
         fullWidth
         helperText={touched ? normalizedError : undefined}
-        inputProps={{'data-testid': }}
+        inputProps={{ "data-testid": testId.current }}
       />
     )
   }
