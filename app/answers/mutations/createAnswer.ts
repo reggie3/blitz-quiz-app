@@ -11,7 +11,7 @@ export default resolver.pipe(
   resolver.zod(CreateAnswer),
   resolver.authorize(),
   async (input, ctx: Ctx) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+    console.log("answer", input)
     const answer = await db.answer.create({ data: { ...input, creatorId: ctx.session.userId } })
 
     return answer
