@@ -1,5 +1,5 @@
 import { TextField, StandardTextFieldProps } from "@material-ui/core"
-import React, { forwardRef, PropsWithoutRef } from "react"
+import React, { forwardRef, PropsWithoutRef, useRef } from "react"
 import { useField } from "react-final-form"
 
 export interface LabeledTextFieldProps extends StandardTextFieldProps {
@@ -11,6 +11,7 @@ export interface LabeledTextFieldProps extends StandardTextFieldProps {
   type?: "text" | "password" | "email" | "number"
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   color?: "primary" | "secondary"
+  testId?: string
 }
 
 export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
@@ -21,7 +22,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
     } = useField(name, {
       parse: props.type === "number" ? Number : undefined,
     })
-
+    const testId = useRef('labeled-text-field' + testId ?? props.n)
     const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
 
     console.log("normalizedError", normalizedError)
@@ -36,6 +37,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
         variant="standard"
         fullWidth
         helperText={touched ? normalizedError : undefined}
+        inputProps={{'data-testid': }}
       />
     )
   }

@@ -1,4 +1,4 @@
-import { mock1RoundResult, mock3RoundResults, mockGamesInfo } from "app/mockData/mockData"
+import { mock1RoundResult, mock3RoundResults, mockGamesInfo } from "app/testUtils/mockData/mockData"
 import { GamePlayerInfo, RoundResult } from "myTypes"
 import { getRoundResults } from "./getRoundResults"
 
