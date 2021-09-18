@@ -2,7 +2,7 @@ import { Ctx, resolver } from "blitz"
 import db from "db"
 import { z } from "zod"
 
-const CreateAnswer = z.object({
+export const CreateAnswer = z.object({
   text: z.string(),
   questionIds: z.string().array().optional(),
 })
